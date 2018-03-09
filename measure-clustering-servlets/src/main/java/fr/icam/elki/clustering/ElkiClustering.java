@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.servlet.ServletException;
@@ -33,41 +34,28 @@ import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.MultipleObjectsBundleDatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.bundle.MultipleObjectsBundle;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.NumberVectorDistanceFunction;
-import de.lmu.ifi.dbs.elki.distance.distancefunction.minkowski.SquaredEuclideanDistanceFunction;
 
 public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 
 	private static final long serialVersionUID = 20180305100000L;
+		
+	private Gson mapper;
 	
-	private Gson gson;
-	
-	private NumberVectorDistanceFunction<NumberVector> distance;
-	
-	public void init() throws ServletException {
-		gson = new Gson();
-		distance = SquaredEuclideanDistanceFunction.STATIC;
+	protected Gson getMapper() {
+		return mapper;
 	}
-	
-	protected final NumberVectorDistanceFunction<NumberVector> getDistance() {
-		return distance;
-	}
-	
-	protected final void setDistance(String name) throws Exception {
-		if (name == null) {
-			
-		} else if (name.equalsIgnoreCase("squared-euclidean")) {
-			distance = SquaredEuclideanDistanceFunction.STATIC;	
-		} else {
-			
-		}
-	}
-
-	protected abstract boolean setUp(HttpServletRequest request) throws Exception;
 	
 	@Override
-	public final void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void init() throws ServletException {
+		super.init();
+		mapper = new Gson();
+	}
+
+	protected abstract boolean setUp(HttpServletRequest request) throws ServletException;
+	
+	@Override
+	public final void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
-			this.setDistance(request.getParameter("distance"));
 			boolean done = this.setUp(request);
 			response.getWriter().write(done ? "true" : "false");
 		} catch (Exception e) {
@@ -86,7 +74,7 @@ public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 		}
 	}
 
-	protected abstract Clustering<M> doProcess(Database database) throws Exception;
+	protected abstract Clustering<M> doProcess(Database database) throws ServletException;
 
 	protected final Database getDatabase(InputStream input) throws Exception {
 	    MultipleObjectsBundle bundle = new MultipleObjectsBundle();
@@ -183,7 +171,7 @@ public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 			jCluster.add("instances", jVectors);
 			jClusters.add(jCluster);
 	    }
-	    String json = gson.toJson(jClusters);
+	    String json = mapper.toJson(jClusters);
 	    output.write(json.getBytes());
 	}
 

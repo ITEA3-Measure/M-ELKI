@@ -1,22 +1,30 @@
 package fr.icam.elki.clustering.clients;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import fr.icam.elki.clustering.utils.Cluster;
 import fr.icam.elki.clustering.utils.Distance;
@@ -55,27 +63,66 @@ public class ElkiClusteringClient {
 		client.close();
 	}
 
+	public Map<String, Object> getDBScan() throws Exception {
+        HttpGet request = new HttpGet(name + DBSCAN);
+        return this.getMap(request);
+	}
+
+	public Map<String, Object> getKMeans() throws Exception {
+        HttpGet request = new HttpGet(name + KMEANS);
+        return this.getMap(request);
+	}
+
+	public Map<String, Object> getEM() throws Exception {
+        HttpGet request = new HttpGet(name + EM);
+        return this.getMap(request);
+	}
+
+	public Map<String, Object> getSLink() throws Exception {
+        HttpGet request = new HttpGet(name + SLINK);
+        return this.getMap(request);
+	}
+
 	public Boolean setDBScan(Distance distance, double epsilon, int size) throws Exception {
-		String parameters = "?distance=" + distance + "&epsilon=" + epsilon + "&size=" + size;
-        HttpGet request = new HttpGet(name + DBSCAN + parameters);
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
+        parameters.add(new BasicNameValuePair("distance", distance.toString()));
+        parameters.add(new BasicNameValuePair("epsilon", Double.valueOf(epsilon).toString()));
+        parameters.add(new BasicNameValuePair("size", Integer.valueOf(size).toString()));
+        URIBuilder builder = new URIBuilder(name + DBSCAN);
+        builder.addParameters(parameters);
+        HttpPut request = new HttpPut(builder.build());
         return this.getBoolean(request);
 	}
 
 	public Boolean setKMeans(Distance distance, int length, int limit) throws Exception {
-		String parameters = "?distance=" + distance + "&length=" + length + "&limit=" + limit;
-        HttpGet request = new HttpGet(name + KMEANS + parameters);
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
+        parameters.add(new BasicNameValuePair("distance", distance.toString()));
+        parameters.add(new BasicNameValuePair("length", Integer.valueOf(length).toString()));
+        parameters.add(new BasicNameValuePair("limit", Integer.valueOf(limit).toString()));
+        URIBuilder builder = new URIBuilder(name + KMEANS);
+        builder.addParameters(parameters);
+        HttpPut request = new HttpPut(builder.build());
         return this.getBoolean(request);
 	}
 
 	public Boolean setEM(int length, double delta, int limit) throws Exception {
-		String parameters = "?delta=" + delta + "&length=" + length + "&limit=" + limit;
-        HttpGet request = new HttpGet(name + EM + parameters);
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
+        parameters.add(new BasicNameValuePair("length", Integer.valueOf(length).toString()));
+        parameters.add(new BasicNameValuePair("delta", Double.valueOf(delta).toString()));
+        parameters.add(new BasicNameValuePair("limit", Integer.valueOf(limit).toString()));
+        URIBuilder builder = new URIBuilder(name + EM);
+        builder.addParameters(parameters);
+        HttpPut request = new HttpPut(builder.build());
         return this.getBoolean(request);
 	}
 
 	public Boolean setSLink(Distance distance, int size) throws Exception {
-		String parameters = "?distance=" + distance + "&size=" + size;
-        HttpGet request = new HttpGet(name + SLINK + parameters);
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
+        parameters.add(new BasicNameValuePair("distance", distance.toString()));
+        parameters.add(new BasicNameValuePair("size", Integer.valueOf(size).toString()));
+        URIBuilder builder = new URIBuilder(name + SLINK);
+        builder.addParameters(parameters);
+        HttpPut request = new HttpPut(builder.build());
         return this.getBoolean(request);
 	}
 
@@ -143,6 +190,20 @@ public class ElkiClusteringClient {
 		EntityUtils.consume(entity);
 		if (status == 200) {
 			return Boolean.valueOf(message);
+		} else {
+			throw new IOException("error code: " + status + " '" + message + "'");
+		}
+	}
+	
+	private Map<String, Object> getMap(HttpRequestBase request) throws IOException, ClientProtocolException {
+		HttpResponse response = client.execute(host, request);
+		HttpEntity entity = response.getEntity();
+		String message = EntityUtils.toString(entity);
+		int status = response.getStatusLine().getStatusCode();
+		EntityUtils.consume(entity);
+		if (status == 200) { 
+			Type type = new TypeToken<Map<String, Object>>() { }.getType();
+			return mapper.fromJson(message, type);
 		} else {
 			throw new IOException("error code: " + status + " '" + message + "'");
 		}

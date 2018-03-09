@@ -1,6 +1,12 @@
 package fr.icam.elki.clustering;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import de.lmu.ifi.dbs.elki.algorithm.clustering.em.EM;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.em.MultivariateGaussianModelFactory;
@@ -21,32 +27,61 @@ public class EMElkiClustering extends ElkiClustering<EMModel> {
 	
 	private int limit;
 	
-	public void setLength(String length) throws Exception {
+	public void setLength(String length) throws ServletException {
 		if (length == null) {
-			throw new Exception("missing parameter 'length'");
+			throw new ServletException("missing parameter 'length'");
 		} else {
-			this.length = Integer.valueOf(length).intValue();
+			try {
+				this.length = Integer.valueOf(length).intValue();
+			} catch (Throwable t) {
+				throw new ServletException(t);
+			}
 		}
 	}
 	
-	public void setDelta(String delta) throws Exception {
+	public void setDelta(String delta) throws ServletException {
 		if (delta == null) {
-			throw new Exception("missing parameter 'delta'");
+			throw new ServletException("missing parameter 'delta'");
 		} else {
-			this.delta = Double.valueOf(delta).doubleValue();
+			try {
+				this.delta = Double.valueOf(delta).intValue();
+			} catch (Throwable t) {
+				throw new ServletException(t);
+			}
 		}
 	}
 
-	public void setLimit(String limit) throws Exception {
+	public void setLimit(String limit) throws ServletException {
 		if (limit == null) {
-			throw new Exception("missing parameter 'limit'");
+			throw new ServletException("missing parameter 'limit'");
 		} else {
-			this.limit = Integer.valueOf(limit).intValue();
+			try {
+				this.limit = Integer.valueOf(limit).intValue();
+			} catch (Throwable t) {
+				throw new ServletException(t);
+			}
 		}
-	}	
+	}
+	
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		this.setLength(this.getInitParameter("length"));
+		this.setDelta(this.getInitParameter("delta"));
+		this.setLimit(this.getInitParameter("limit"));
+	}
 
 	@Override
-	protected boolean setUp(HttpServletRequest request) throws Exception {
+	public final void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		Map<String, Object> parameters = new HashMap<String, Object>(3);
+		parameters.put("length", length);
+		parameters.put("delta", delta);
+		parameters.put("limit", limit);
+		this.getMapper().toJson(parameters, response.getWriter());
+	}
+
+	@Override
+	protected boolean setUp(HttpServletRequest request) throws ServletException {
 		this.setLength(request.getParameter("length"));
 		this.setDelta(request.getParameter("delta"));
 		this.setLimit(request.getParameter("limit"));
@@ -54,7 +89,7 @@ public class EMElkiClustering extends ElkiClustering<EMModel> {
 	}
 	
 	@Override
-	protected Clustering<EMModel> doProcess(Database database) throws Exception {
+	protected Clustering<EMModel> doProcess(Database database) throws ServletException {
 		RandomlyGeneratedInitialMeans init = new RandomlyGeneratedInitialMeans(RandomFactory.DEFAULT);
 		MultivariateGaussianModelFactory<NumberVector> fact = new MultivariateGaussianModelFactory<NumberVector>(init);
 		EM<NumberVector, EMModel> em = new EM<NumberVector, EMModel>(length, delta, fact, limit, false);
