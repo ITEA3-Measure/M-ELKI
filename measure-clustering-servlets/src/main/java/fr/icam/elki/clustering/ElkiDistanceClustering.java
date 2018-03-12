@@ -57,7 +57,7 @@ public abstract class ElkiDistanceClustering<M extends Model> extends ElkiCluste
 
 	@Override
 	protected boolean setUp(HttpServletRequest request) throws ServletException {
-		this.setDistance(this.getInitParameter("distance"));
+		this.setDistance(request.getParameter("distance"));
 		return true;
 	}
 	

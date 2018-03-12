@@ -16,9 +16,9 @@ import fr.icam.elki.clustering.utils.Instance;
 
 public class DBScanElkiTesting {
 	
-	private static final Double EPSILON = 5.0;
+	private static final Double EPSILON = 8.0;
 	
-	private static final Integer SIZE = 10;
+	private static final Integer SIZE = 8;
 	
 	private ElkiClusteringClient client;
 	
@@ -38,7 +38,7 @@ public class DBScanElkiTesting {
 
 	@Test
 	public void put() throws Exception {
-		boolean done = client.setDBScan(Distance.SquaredEuclidean, EPSILON.doubleValue(), SIZE.intValue());
+		boolean done = client.setDBScan(Distance.Minimum, EPSILON.doubleValue(), SIZE.intValue());
 		Assert.assertTrue(done);
 	}
 

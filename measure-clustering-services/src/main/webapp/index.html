@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="https://elki-project.github.io/img/favicon.png" type="image/png">
     <style>
       html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
       body {padding-top: 5ex;padding-bottom: 9ex;}
@@ -33,7 +34,7 @@
     </header>
     <div class="container-fluid well">
       <h2>
-        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+        <img src="https://elki-project.github.io/img/elk200.png" alt="ELKI" height="60" width="60" />
         Elki <small>Clustering Algorithms</small>
       </h2>
     </div>
@@ -44,9 +45,9 @@
           <div class="list-group-item">
             <h4 class="list-group-item-heading">DBScan</h4>
             <ul class="list-group-item-text">
-              <li>distance: {{dbscan.distance.name}}</li>
-              <li>epsilon: {{dbscan.epsilon}}</li>
-              <li>size: {{dbscan.size}}</li>
+              <li>distance: {{config.dbscan.distance.name}}</li>
+              <li>epsilon: {{config.dbscan.epsilon}}</li>
+              <li>size: {{config.dbscan.size}}</li>
             </ul>
             <p class="list-group-item-text text-right">
               <button class="btn btn-default" ng-click="select('dbscan')">Select</button>
@@ -55,9 +56,9 @@
           <div class="list-group-item">
             <h4 class="list-group-item-heading">KMeans</h4>
             <ul class="list-group-item-text">
-              <li>distance: {{kmeans.distance.name}}</li>
-              <li>length: {{kmeans.length}}</li>
-              <li>limit: {{kmeans.limit}}</li>
+              <li>distance: {{config.kmeans.distance.name}}</li>
+              <li>length: {{config.kmeans.length}}</li>
+              <li>limit: {{config.kmeans.limit}}</li>
             </ul>
             <p class="list-group-item-text text-right">
               <button class="btn btn-default" ng-click="select('kmeans')">Select</button>
@@ -66,9 +67,9 @@
           <div class="list-group-item">
             <h4 class="list-group-item-heading">EM</h4>
             <ul class="list-group-item-text">
-              <li>length: {{em.length}}</li>
-              <li>delta: {{em.delta}}</li>
-              <li>limit: {{em.limit}}</li>
+              <li>length: {{config.em.length}}</li>
+              <li>delta: {{config.em.delta}}</li>
+              <li>limit: {{config.em.limit}}</li>
             </ul>
             <p class="list-group-item-text text-right">
               <button class="btn btn-default" ng-click="select('em')">Select</button>
@@ -77,8 +78,8 @@
           <div class="list-group-item">
             <h4 class="list-group-item-heading">SLink</h4>
             <ul class="list-group-item-text">
-              <li>distance: {{slink.distance.name}}</li>
-              <li>size: {{slink.size}}</li>
+              <li>distance: {{config.slink.distance.name}}</li>
+              <li>size: {{config.slink.size}}</li>
             </ul>
             <p class="list-group-item-text text-right">
               <button class="btn btn-default" ng-click="select('slink')">Select</button>
@@ -87,7 +88,7 @@
         </div>
       </div>
       <div class="col-md-4">
-        <form class="form ng-cloak" role="form" name="dbscan" ng-show="selected == 'dbscan'">
+        <form class="form ng-cloak" role="form" name="dbscanForm" ng-show="selected == 'dbscan'">
           <fieldset>
             <legend>Configuring DBScan</legend>
             <div class="form-group">
@@ -104,35 +105,69 @@
               </select>
             </div>
             <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default"><strong>Reset</strong></button>
-               <button type="submit" class="btn" ng-click="dbscan.$valid && dbscanPut()" ng-disabled="dbscan.$invalid"><strong>Submit</strong></button>
+               <button type="submit" class="btn btn-default" ng-click="dbscanGet()"><strong>Reset</strong></button>
+               <button type="submit" class="btn" ng-click="dbscanForm.$valid && dbscanPut()" ng-disabled="dbscanForm.$invalid"><strong>Submit</strong></button>
              </div>
           </fieldset>
         </form>
-        <form class="form ng-cloak" role="form" name="kmeans" ng-show="selected == 'kmeans'">
+        <form class="form ng-cloak" role="form" name="kmeansForm" ng-show="selected == 'kmeans'">
           <fieldset>
             <legend>Configuring KMeans</legend>
+            <div class="form-group">
+              <label for="kmeans.length">Length</label>
+              <input type="number" step="1" id="kmeans.length" class="form-control" ng-model="kmeans.length" placeholder="Length" ng-required="true" />
+            </div>
+            <div class="form-group">
+              <label for="kmeans.limit">Limit</label>
+              <input type="number" step="1" id="kmeans.limit" class="form-control" ng-model="kmeans.limit" placeholder="Limit" ng-required="true" />
+            </div>
+            <div class="form-group">
+              <label for="kmeans.distance">Distance Function</label>
+              <select id="kmeans.distance" class="form-control" ng-model="kmeans.distance" placeholder="Distance Function" ng-change="kmeansDistance(kmeans.distance)" ng-required="true" ng-options="distance.name for distance in distances track by distance.id">
+              </select>
+            </div>
             <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default"><strong>Reset</strong></button>
-               <button type="submit" class="btn" ng-click="kmeans.$valid && kmeansPut()" ng-disabled="kmeans.$invalid"><strong>Submit</strong></button>
+               <button type="submit" class="btn btn-default" ng-click="kmeansGet()"><strong>Reset</strong></button>
+               <button type="submit" class="btn" ng-click="kmeansForm.$valid && kmeansPut()" ng-disabled="kmeansForm.$invalid"><strong>Submit</strong></button>
              </div>
           </fieldset>
         </form>
-        <form class="form ng-cloak" role="form" name="em" ng-show="selected == 'em'">
+        <form class="form ng-cloak" role="form" name="emForm" ng-show="selected == 'em'">
           <fieldset>
             <legend>Configuring EM</legend>
+            <div class="form-group">
+              <label for="em.delta">Delta</label>
+              <input type="number" step="1.0" id="em.delta" class="form-control" ng-model="em.delta" placeholder="Delta" ng-required="true" />
+            </div>
+            <div class="form-group">
+              <label for="em.length">Length</label>
+              <input type="number" step="1" id="em.length" class="form-control" ng-model="em.length" placeholder="Length" ng-required="true" />
+            </div>
+            <div class="form-group">
+              <label for="em.limit">Limit</label>
+              <input type="number" step="1" id="em.limit" class="form-control" ng-model="em.limit" placeholder="Limit" ng-required="true" />
+            </div>
             <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default"><strong>Reset</strong></button>
-               <button type="submit" class="btn" ng-click="em.$valid && emPut()" ng-disabled="em.$invalid"><strong>Submit</strong></button>
+               <button type="submit" class="btn btn-default" ng-click="emGet()"><strong>Reset</strong></button>
+               <button type="submit" class="btn" ng-click="emForm.$valid && emPut()" ng-disabled="emForm.$invalid"><strong>Submit</strong></button>
              </div>
           </fieldset>
         </form>
-        <form class="form ng-cloak" role="form" name="slink" ng-show="selected == 'slink'">
+        <form class="form ng-cloak" role="form" name="slinkForm" ng-show="selected == 'slink'">
           <fieldset>
             <legend>Configuring SLink</legend>
+            <div class="form-group">
+              <label for="slink.size">Size</label>
+              <input type="number" step="1" id="slink.size" class="form-control" ng-model="slink.size" placeholder="Size" ng-required="true" />
+            </div>
+            <div class="form-group">
+              <label for="slink.distance">Distance Function</label>
+              <select id="slink.distance" class="form-control" ng-model="slink.distance" placeholder="Distance Function" ng-change="slinkDistance(dbscan.distance)" ng-required="true" ng-options="distance.name for distance in distances track by distance.id">
+              </select>
+            </div>
             <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default"><strong>Reset</strong></button>
-               <button type="submit" class="btn" ng-click="slink.$valid && slinkPut()" ng-disabled="slink.$invalid"><strong>Submit</strong></button>
+               <button type="submit" class="btn btn-default" ng-click="slinkGet()"><strong>Reset</strong></button>
+               <button type="submit" class="btn" ng-click="slinkForm.$valid && slinkPut()" ng-disabled="slinkForm.$invalid"><strong>Submit</strong></button>
              </div>
           </fieldset>
         </form>
@@ -161,6 +196,8 @@
 
 	$scope.distances = [];
 	
+	$scope.config = {};
+	
 	$scope.dbscan = {};
 	$scope.kmeans = {};
 	$scope.em = {};
@@ -173,10 +210,6 @@
 	
 	$scope.kmeansDistance = function(distance) {
 		$scope.kmeans.distance = distance;
-	}
-	
-	$scope.emDistance = function(distance) {
-		$scope.em.distance = distance;
 	}
 	
 	$scope.slinkDistance = function(distance) {
@@ -192,52 +225,60 @@
       });
     }
 	
-	var dbscanGet = function() {
+    $scope.dbscanGet = function() {
       $http({method:'GET',url:'./dbscan'})
 	  .then(function onSuccess(response) {
-	    $scope.dbscan = response.data;
+		$scope.config.dbscan = response.data;
+	    $scope.dbscan = angular.copy($scope.config.dbscan);
       }, function onError(response) {
 		console.log($scope.dbscan);
-  	    $scope.dbscan = {};
+		$scope.config.dbscan = {};
+		$scope.dbscan = {};
       });
     }
   	
-  	var kmeansGet = function() {
+    $scope.kmeansGet = function() {
       $http({method:'GET',url:'./kmeans'})
   	  .then(function onSuccess(response) {
-  	    $scope.kmeans = response.data;
+  		$scope.config.kmeans = response.data;
+  	    $scope.kmeans = angular.copy($scope.config.kmeans);
       }, function onError(response) {
+    	$scope.config.kmeans = {};
     	$scope.kmeans = {};
       });
     }
 
-    var emGet = function() {
+    $scope.emGet = function() {
       $http({method:'GET',url:'./em'})
       .then(function onSuccess(response) {
-        $scope.em = response.data;
+  	    $scope.config.em = response.data;
+        $scope.em = angular.copy($scope.config.em);
       }, function onError(response) {
+    	$scope.config.em = {};
         $scope.em = {};
       });
     }
 
-    var slinkGet = function() {
+    $scope.slinkGet = function() {
       $http({method:'GET',url:'./slink'})
       .then(function onSuccess(response) {
-        $scope.slink = response.data;
+        $scope.config.slink = response.data;
+        $scope.slink = angular.copy($scope.config.slink);
       }, function onError(response) {
+    	$scope.config.slink = {};
         $scope.slink = {};
       });
     }
 	
 	$scope.dbscanPut = function() {
-	  console.log("dbscan config");
-	  var parameters = "?distance" + $scope.dbscan.distance.id + "&epsilon" + $scope.dbscan.epsilon + "&size" + $scope.dbscan.size;
+	  console.log("dbscan");
+	  var parameters = {distance:$scope.dbscan.distance.id,epsilon:$scope.dbscan.epsilon,size:$scope.dbscan.size};
       $http({method:'PUT',url:'./dbscan',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
 	      $scope.selected = null;
-	      $scope.dbscan = {};
+	      $scope.dbscanGet();
 	    }
       }, function onError(response) {
         console.log(response.data);
@@ -245,13 +286,14 @@
     }
 	
 	$scope.kmeansPut = function() {
-	  var parameters = {"distance":$scope.kmeans.distance.id};
+      console.log("kmeans");
+	  var parameters = {distance:$scope.kmeans.distance.id,length:$scope.kmeans.length,limit:$scope.kmeans.limit};
       $http({method:'PUT',url:'./kmeans',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
 	      $scope.selected = null;
-	      $scope.kmeans = {};
+	      $scope.kmeansGet();
 	    }
       }, function onError(response) {
         console.log(response.data);
@@ -259,13 +301,14 @@
     }
 	
 	$scope.emPut = function() {
-	  var parameters = {};
+	  console.log("em");
+	  var parameters = {delta:$scope.em.delta,length:$scope.em.length,limit:$scope.em.limit};
       $http({method:'PUT',url:'./em',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
 	      $scope.selected = null;
-	      $scope.em = {};
+	      $scope.emGet();
 	    }
       }, function onError(response) {
         console.log(response.data);
@@ -273,13 +316,14 @@
     }
 	
 	$scope.slinkPut = function() {
-	  var parameters = {"distance":$scope.slink.distance.id};
+      console.log("slink");
+	  var parameters = {distance:$scope.slink.distance.id,size:$scope.slink.size};
       $http({method:'PUT',url:'./slink',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
 	      $scope.selected = null;
-	      $scope.slink = {};
+	      $scope.slinkGet();
 	    }
       }, function onError(response) {
         console.log(response.data);
@@ -287,10 +331,10 @@
 	}
 	
 	distanceGet();
-	dbscanGet();
-	kmeansGet();
-	emGet();
-	slinkGet();
+	$scope.dbscanGet();
+	$scope.kmeansGet();
+	$scope.emGet();
+	$scope.slinkGet();
   
   });
   </script>
