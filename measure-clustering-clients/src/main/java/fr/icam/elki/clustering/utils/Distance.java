@@ -2,7 +2,9 @@ package fr.icam.elki.clustering.utils;
 
 public enum Distance {
 
-	SquaredEuclidean("");
+	SquaredEuclidean("squared-euclidean"),
+	Minimum("minimum"),
+	Maximum("maximum");
 	
 	private String name;
 	

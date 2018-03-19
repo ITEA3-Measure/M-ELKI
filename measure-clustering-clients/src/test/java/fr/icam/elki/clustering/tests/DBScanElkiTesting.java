@@ -75,7 +75,7 @@ public class DBScanElkiTesting extends DBScanElkiClustering {
 	
 	@Before
 	public void setup() throws Exception {
-		client = new ElkiClusteringClient("http", "172.21.50.1", 8080, "elki");
+		client = new ElkiClusteringClient("http", "emit.icam.fr", 80, "elki");
 		gson = new Gson();
 		this.init();
 		this.setDistance(Distance.SquaredEuclidean.toString());
