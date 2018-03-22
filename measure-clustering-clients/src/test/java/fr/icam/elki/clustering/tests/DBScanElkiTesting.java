@@ -51,7 +51,7 @@ public class DBScanElkiTesting {
 	
 	@Before
 	public void setup() throws Exception {
-		client = new ElkiClusteringClient("http", "172.21.50.1", 8080, "elki");
+		client = new ElkiClusteringClient("http", "emit.icam.fr", 80, "elki");
 		int length = 10000;
 		int size = 2;
 		instances = new ArrayList<Instance>(length);

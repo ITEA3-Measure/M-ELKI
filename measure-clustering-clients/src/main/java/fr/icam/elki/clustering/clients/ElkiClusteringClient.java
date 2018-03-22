@@ -2,7 +2,6 @@ package fr.icam.elki.clustering.clients;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -20,7 +18,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.google.gson.Gson;
@@ -83,45 +80,37 @@ public class ElkiClusteringClient {
         return this.getMap(request);
 	}
 
-	public Boolean setDBScan(Distance distance, double epsilon, int size) throws Exception {
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
-        parameters.add(new BasicNameValuePair("distance", distance.toString()));
-        parameters.add(new BasicNameValuePair("epsilon", Double.valueOf(epsilon).toString()));
-        parameters.add(new BasicNameValuePair("size", Integer.valueOf(size).toString()));
-        URIBuilder builder = new URIBuilder(name + DBSCAN);
-        builder.addParameters(parameters);
+	public Boolean setDBScan(Distance distance, Double epsilon, Integer size) throws Exception {
+		URIBuilder builder = new URIBuilder(name + DBSCAN);
+		builder.addParameter("distance", distance.toString().toLowerCase());
+		builder.addParameter("epsilon", epsilon.toString());
+		builder.addParameter("size", size.toString());
         HttpPut request = new HttpPut(builder.build());
         return this.getBoolean(request);
 	}
 
-	public Boolean setKMeans(Distance distance, int length, int limit) throws Exception {
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
-        parameters.add(new BasicNameValuePair("distance", distance.toString()));
-        parameters.add(new BasicNameValuePair("length", Integer.valueOf(length).toString()));
-        parameters.add(new BasicNameValuePair("limit", Integer.valueOf(limit).toString()));
-        URIBuilder builder = new URIBuilder(name + KMEANS);
-        builder.addParameters(parameters);
+	public Boolean setKMeans(Distance distance, Integer length, Integer limit) throws Exception {
+		URIBuilder builder = new URIBuilder(name + KMEANS);
+		builder.addParameter("distance", distance.toString().toLowerCase());
+		builder.addParameter("length", length.toString());
+		builder.addParameter("limit", limit.toString());
         HttpPut request = new HttpPut(builder.build());
         return this.getBoolean(request);
 	}
 
-	public Boolean setEM(int length, double delta, int limit) throws Exception {
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>(3);
-        parameters.add(new BasicNameValuePair("length", Integer.valueOf(length).toString()));
-        parameters.add(new BasicNameValuePair("delta", Double.valueOf(delta).toString()));
-        parameters.add(new BasicNameValuePair("limit", Integer.valueOf(limit).toString()));
-        URIBuilder builder = new URIBuilder(name + EM);
-        builder.addParameters(parameters);
-        HttpPut request = new HttpPut(builder.build());
-        return this.getBoolean(request);
+	public Boolean setEM(Integer length, Double delta, Integer limit) throws Exception {
+		URIBuilder builder = new URIBuilder(name + EM);
+		builder.addParameter("delta", delta.toString());
+		builder.addParameter("length", length.toString());
+		builder.addParameter("limit", limit.toString());
+		HttpPut request = new HttpPut(builder.build());
+		return this.getBoolean(request);
 	}
 
-	public Boolean setSLink(Distance distance, int size) throws Exception {
-        List<NameValuePair> parameters = new ArrayList<NameValuePair>(2);
-        parameters.add(new BasicNameValuePair("distance", distance.toString()));
-        parameters.add(new BasicNameValuePair("size", Integer.valueOf(size).toString()));
-        URIBuilder builder = new URIBuilder(name + SLINK);
-        builder.addParameters(parameters);
+	public Boolean setSLink(Distance distance, Integer size) throws Exception {
+		URIBuilder builder = new URIBuilder(name + SLINK);
+		builder.addParameter("distance", distance.toString().toLowerCase());
+		builder.addParameter("size", size.toString());
         HttpPut request = new HttpPut(builder.build());
         return this.getBoolean(request);
 	}
