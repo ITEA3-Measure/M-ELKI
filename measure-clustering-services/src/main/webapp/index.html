@@ -22,7 +22,7 @@
     <header>
       <div class="navbar navbar-inverse navbar-custom navbar-fixed-top">
         <div class="container-fluid">
-          <a class="navbar-brand" href="./index.html">Elki</a>
+          <a class="navbar-brand" href="/elki/index.html">Elki</a>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
             </ul>
@@ -217,7 +217,7 @@
 	}
 
     var distanceGet = function() {
-      $http({method:'GET',url:'./distances'})
+      $http({method:'GET',url:'/elki/distances'})
       .then(function onSuccess(response) {
         $scope.distances = response.data;
       }, function onError(response) {
@@ -226,7 +226,7 @@
     }
 	
     $scope.dbscanGet = function() {
-      $http({method:'GET',url:'./dbscan'})
+      $http({method:'GET',url:'/elki/dbscan'})
 	  .then(function onSuccess(response) {
 		$scope.config.dbscan = response.data;
 	    $scope.dbscan = angular.copy($scope.config.dbscan);
@@ -238,7 +238,7 @@
     }
   	
     $scope.kmeansGet = function() {
-      $http({method:'GET',url:'./kmeans'})
+      $http({method:'GET',url:'/elki/kmeans'})
   	  .then(function onSuccess(response) {
   		$scope.config.kmeans = response.data;
   	    $scope.kmeans = angular.copy($scope.config.kmeans);
@@ -249,7 +249,7 @@
     }
 
     $scope.emGet = function() {
-      $http({method:'GET',url:'./em'})
+      $http({method:'GET',url:'/elki/em'})
       .then(function onSuccess(response) {
   	    $scope.config.em = response.data;
         $scope.em = angular.copy($scope.config.em);
@@ -260,7 +260,7 @@
     }
 
     $scope.slinkGet = function() {
-      $http({method:'GET',url:'./slink'})
+      $http({method:'GET',url:'/elki/slink'})
       .then(function onSuccess(response) {
         $scope.config.slink = response.data;
         $scope.slink = angular.copy($scope.config.slink);
@@ -273,7 +273,7 @@
 	$scope.dbscanPut = function() {
 	  console.log("dbscan");
 	  var parameters = {distance:$scope.dbscan.distance.id,epsilon:$scope.dbscan.epsilon,size:$scope.dbscan.size};
-      $http({method:'PUT',url:'./dbscan',params:parameters})
+      $http({method:'PUT',url:'/elki/dbscan',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
@@ -288,7 +288,7 @@
 	$scope.kmeansPut = function() {
       console.log("kmeans");
 	  var parameters = {distance:$scope.kmeans.distance.id,length:$scope.kmeans.length,limit:$scope.kmeans.limit};
-      $http({method:'PUT',url:'./kmeans',params:parameters})
+      $http({method:'PUT',url:'/elki/kmeans',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
@@ -303,7 +303,7 @@
 	$scope.emPut = function() {
 	  console.log("em");
 	  var parameters = {delta:$scope.em.delta,length:$scope.em.length,limit:$scope.em.limit};
-      $http({method:'PUT',url:'./em',params:parameters})
+      $http({method:'PUT',url:'/elki/em',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
@@ -318,7 +318,7 @@
 	$scope.slinkPut = function() {
       console.log("slink");
 	  var parameters = {distance:$scope.slink.distance.id,size:$scope.slink.size};
-      $http({method:'PUT',url:'./slink',params:parameters})
+      $http({method:'PUT',url:'/elki/slink',params:parameters})
 	  .then(function onSuccess(response) {
 	    var done = response.data;
 	    if (done) {
