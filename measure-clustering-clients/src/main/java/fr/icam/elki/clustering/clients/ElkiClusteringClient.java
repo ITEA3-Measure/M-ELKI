@@ -1,33 +1,20 @@
 package fr.icam.elki.clustering.clients;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.apache.httpclient.commons.AbstractClient;
 
 import fr.icam.elki.clustering.utils.Cluster;
 import fr.icam.elki.clustering.utils.Distance;
 import fr.icam.elki.clustering.utils.Instance;
 
-public class ElkiClusteringClient {
+public class ElkiClusteringClient extends AbstractClient {
 	
 	private static final String DBSCAN = "dbscan";
 	
@@ -37,51 +24,38 @@ public class ElkiClusteringClient {
 	
 	private static final String SLINK = "slink";
 	
-	private Gson mapper;
-	
-    private HttpHost host;
-    
-    private CloseableHttpClient client;
-    
-    private String name;
-	
 	public ElkiClusteringClient(String protocol, String hostname, int port, String appname) {
-		mapper = new Gson();
-        host = new HttpHost(hostname, port, protocol);
-        client = HttpClients.createDefault();
-        name =  appname.startsWith("/") ? appname : "/" + appname;
-        name += appname.endsWith("/") ? "" : "/";
+		super(protocol, hostname, port, appname);
 	}
 
 	public void setUp() throws Exception {
 	}
 	
 	public void tearDown() throws Exception {
-		client.close();
 	}
 
 	public Map<String, Object> getDBScan() throws Exception {
-        HttpGet request = new HttpGet(name + DBSCAN);
+        HttpGet request = new HttpGet(this.getAppName() + DBSCAN);
         return this.getMap(request);
 	}
 
 	public Map<String, Object> getKMeans() throws Exception {
-        HttpGet request = new HttpGet(name + KMEANS);
+        HttpGet request = new HttpGet(this.getAppName() + KMEANS);
         return this.getMap(request);
 	}
 
 	public Map<String, Object> getEM() throws Exception {
-        HttpGet request = new HttpGet(name + EM);
+        HttpGet request = new HttpGet(this.getAppName() + EM);
         return this.getMap(request);
 	}
 
 	public Map<String, Object> getSLink() throws Exception {
-        HttpGet request = new HttpGet(name + SLINK);
+        HttpGet request = new HttpGet(this.getAppName() + SLINK);
         return this.getMap(request);
 	}
 
 	public Boolean setDBScan(Distance distance, Double epsilon, Integer size) throws Exception {
-		URIBuilder builder = new URIBuilder(name + DBSCAN);
+		URIBuilder builder = new URIBuilder(this.getAppName() + DBSCAN);
 		builder.addParameter("distance", distance.toString().toLowerCase());
 		builder.addParameter("epsilon", epsilon.toString());
 		builder.addParameter("size", size.toString());
@@ -90,7 +64,7 @@ public class ElkiClusteringClient {
 	}
 
 	public Boolean setKMeans(Distance distance, Integer length, Integer limit) throws Exception {
-		URIBuilder builder = new URIBuilder(name + KMEANS);
+		URIBuilder builder = new URIBuilder(this.getAppName() + KMEANS);
 		builder.addParameter("distance", distance.toString().toLowerCase());
 		builder.addParameter("length", length.toString());
 		builder.addParameter("limit", limit.toString());
@@ -99,7 +73,7 @@ public class ElkiClusteringClient {
 	}
 
 	public Boolean setEM(Integer length, Double delta, Integer limit) throws Exception {
-		URIBuilder builder = new URIBuilder(name + EM);
+		URIBuilder builder = new URIBuilder(this.getAppName() + EM);
 		builder.addParameter("delta", delta.toString());
 		builder.addParameter("length", length.toString());
 		builder.addParameter("limit", limit.toString());
@@ -108,7 +82,7 @@ public class ElkiClusteringClient {
 	}
 
 	public Boolean setSLink(Distance distance, Integer size) throws Exception {
-		URIBuilder builder = new URIBuilder(name + SLINK);
+		URIBuilder builder = new URIBuilder(this.getAppName() + SLINK);
 		builder.addParameter("distance", distance.toString().toLowerCase());
 		builder.addParameter("size", size.toString());
         HttpPut request = new HttpPut(builder.build());
@@ -132,7 +106,7 @@ public class ElkiClusteringClient {
 	}
 
 	private List<Cluster> doProcess(String algorithm, List<Instance> instances) throws Exception {
-		 HttpPost request = new HttpPost(name + algorithm);
+		 HttpPost request = new HttpPost(this.getAppName() + algorithm);
 		 String string = this.getContent(instances);
 		 StringEntity entity = new StringEntity(string);
 		 request.setEntity(entity);
@@ -156,46 +130,6 @@ public class ElkiClusteringClient {
 			}
 		}
 		return builder.toString();
-	}
-	
-	private <T> List<T> getList(Class<T[]> type, HttpRequestBase request) throws IOException, ClientProtocolException {
-		HttpResponse response = client.execute(host, request);
-        HttpEntity entity = response.getEntity();
-        String message = EntityUtils.toString(entity);
-        int status = response.getStatusLine().getStatusCode();
-        EntityUtils.consume(entity);
-        if (status == 200) {
-        	return Arrays.asList(mapper.fromJson(message, type));
-        } else {
-        	throw new IOException("error code: " + status + " '" + message + "'");
-        }
-	}
-	
-	private Boolean getBoolean(HttpRequestBase request) throws IOException, ClientProtocolException {
-		HttpResponse response = client.execute(host, request);
-		HttpEntity entity = response.getEntity();
-		String message = EntityUtils.toString(entity);
-		int status = response.getStatusLine().getStatusCode();
-		EntityUtils.consume(entity);
-		if (status == 200) {
-			return Boolean.valueOf(message);
-		} else {
-			throw new IOException("error code: " + status + " '" + message + "'");
-		}
-	}
-	
-	private Map<String, Object> getMap(HttpRequestBase request) throws IOException, ClientProtocolException {
-		HttpResponse response = client.execute(host, request);
-		HttpEntity entity = response.getEntity();
-		String message = EntityUtils.toString(entity);
-		int status = response.getStatusLine().getStatusCode();
-		EntityUtils.consume(entity);
-		if (status == 200) { 
-			Type type = new TypeToken<Map<String, Object>>() { }.getType();
-			return mapper.fromJson(message, type);
-		} else {
-			throw new IOException("error code: " + status + " '" + message + "'");
-		}
 	}
 
 }
