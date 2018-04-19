@@ -4,7 +4,6 @@
   <artifactId>measure-analysis-platform</artifactId>
   <version>1.0</version>
   <name>MEASURE Analysis Platform API</name>
-  <packaging>war</packaging>
   <properties>
     <encoding>UTF-8</encoding>
     <maven.compiler.source>1.8</maven.compiler.source>

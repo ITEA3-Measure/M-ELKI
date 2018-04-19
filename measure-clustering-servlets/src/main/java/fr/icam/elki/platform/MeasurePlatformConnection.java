@@ -24,8 +24,15 @@ public class MeasurePlatformConnection extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		try {
+			System.out.println("configuring ...");
 			client = new MeasurePlatformClient("http", "194.2.241.244", 80, "/measure");
+			System.out.println("connecting ...");
+			client.setUp();
+			System.out.println("connected ...");
+			System.out.println("registering ...");
 			client.doRegister(URI.create(HOST).toURL(), DESC, NAME);
+			System.out.println("registered ...");
+			System.out.println("configured ...");
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

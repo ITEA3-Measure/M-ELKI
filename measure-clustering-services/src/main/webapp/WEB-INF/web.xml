@@ -41,8 +41,8 @@
     
   <!-- mesaure platform -->
   <servlet>
-    <servlet-name>measure</servlet-name>
-    <servlet-class>fr.icam.elki.measure.MeasurePlatformConnection</servlet-class>
+    <servlet-name>platform</servlet-name>
+    <servlet-class>fr.icam.elki.platform.MeasurePlatformConnection</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   
