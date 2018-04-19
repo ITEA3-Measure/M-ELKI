@@ -21,42 +21,42 @@ public class EMElkiClustering extends ElkiClustering<EMModel> {
 
 	private static final long serialVersionUID = 20180305123000L;
 	
-	private int length;
+	private Map<Long, Integer> lengths;
 	
-	private double delta;
+	private Map<Long, Double> deltas;
 	
-	private int limit;
+	private Map<Long, Integer> limits;
 	
-	public void setLength(String length) throws ServletException {
+	public void setLength(Long id, String length) throws ServletException {
 		if (length == null) {
 			throw new ServletException("missing parameter 'length'");
 		} else {
 			try {
-				this.length = Integer.valueOf(length).intValue();
+				this.lengths.put(id, Integer.valueOf(length));
 			} catch (Throwable t) {
 				throw new ServletException(t);
 			}
 		}
 	}
 	
-	public void setDelta(String delta) throws ServletException {
+	public void setDelta(Long id, String delta) throws ServletException {
 		if (delta == null) {
 			throw new ServletException("missing parameter 'delta'");
 		} else {
 			try {
-				this.delta = Double.valueOf(delta).intValue();
+				this.deltas.put(id, Double.valueOf(delta));
 			} catch (Throwable t) {
 				throw new ServletException(t);
 			}
 		}
 	}
 
-	public void setLimit(String limit) throws ServletException {
+	public void setLimit(Long id, String limit) throws ServletException {
 		if (limit == null) {
 			throw new ServletException("missing parameter 'limit'");
 		} else {
 			try {
-				this.limit = Integer.valueOf(limit).intValue();
+				this.limits.put(id, Integer.valueOf(limit));
 			} catch (Throwable t) {
 				throw new ServletException(t);
 			}
@@ -66,33 +66,37 @@ public class EMElkiClustering extends ElkiClustering<EMModel> {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		this.setLength(this.getInitParameter("length"));
-		this.setDelta(this.getInitParameter("delta"));
-		this.setLimit(this.getInitParameter("limit"));
+		this.lengths = new HashMap<Long, Integer>(128);
+		this.deltas = new HashMap<Long, Double>(128);
+		this.limits = new HashMap<Long, Integer>(128);
+		this.setLength(0L, this.getInitParameter("length"));
+		this.setDelta(0L, this.getInitParameter("delta"));
+		this.setLimit(0L, this.getInitParameter("limit"));
 	}
 
 	@Override
 	public final void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		Long id = this.getResource(request);
 		Map<String, Object> parameters = new HashMap<String, Object>(3);
-		parameters.put("length", length);
-		parameters.put("delta", delta);
-		parameters.put("limit", limit);
+		parameters.put("length", lengths.get(id));
+		parameters.put("delta", deltas.get(id));
+		parameters.put("limit", limits.get(id));
 		this.getMapper().toJson(parameters, response.getWriter());
 	}
 
 	@Override
-	protected boolean setUp(HttpServletRequest request) throws ServletException {
-		this.setLength(request.getParameter("length"));
-		this.setDelta(request.getParameter("delta"));
-		this.setLimit(request.getParameter("limit"));
+	protected boolean setUp(Long id, HttpServletRequest request) throws ServletException {
+		this.setLength(id, request.getParameter("length"));
+		this.setDelta(id, request.getParameter("delta"));
+		this.setLimit(id, request.getParameter("limit"));
 		return true;
 	}
 	
 	@Override
-	protected Clustering<EMModel> doProcess(Database database) throws ServletException {
+	protected Clustering<EMModel> doProcess(Long id, Database database) throws ServletException {
 		RandomlyGeneratedInitialMeans init = new RandomlyGeneratedInitialMeans(RandomFactory.DEFAULT);
 		MultivariateGaussianModelFactory<NumberVector> fact = new MultivariateGaussianModelFactory<NumberVector>(init);
-		EM<NumberVector, EMModel> em = new EM<NumberVector, EMModel>(length, delta, fact, limit, false);
+		EM<NumberVector, EMModel> em = new EM<NumberVector, EMModel>(lengths.get(id), deltas.get(id), fact, limits.get(id), false);
 	    return em.run(database);
 	}
 

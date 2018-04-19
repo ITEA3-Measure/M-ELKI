@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import javax.servlet.ServletException;
@@ -21,7 +20,6 @@ import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
 import de.lmu.ifi.dbs.elki.data.DoubleVector;
 import de.lmu.ifi.dbs.elki.data.ExternalID;
-import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.Model;
 import de.lmu.ifi.dbs.elki.data.type.SimpleTypeInformation;
 import de.lmu.ifi.dbs.elki.data.type.TypeUtil;
@@ -33,7 +31,6 @@ import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.MultipleObjectsBundleDatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.bundle.MultipleObjectsBundle;
-import de.lmu.ifi.dbs.elki.distance.distancefunction.NumberVectorDistanceFunction;
 
 public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 
@@ -51,12 +48,13 @@ public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 		mapper = new Gson();
 	}
 
-	protected abstract boolean setUp(HttpServletRequest request) throws ServletException;
+	protected abstract boolean setUp(Long id, HttpServletRequest request) throws ServletException;
 	
 	@Override
 	public final void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
-			boolean done = this.setUp(request);
+			Long id = this.getResource(request);
+			boolean done = this.setUp(id, request);
 			response.getWriter().write(done ? "true" : "false");
 		} catch (Exception e) {
 			response.sendError(520, e.getMessage());
@@ -66,15 +64,20 @@ public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 	@Override
 	public final void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
+			Long id = this.getResource(request);
 			Database database = this.getDatabase(request.getInputStream());
-			Clustering<M> clusters = this.doProcess(database);
+			Clustering<M> clusters = this.doProcess(id, database);
 			this.doPrint(database, clusters, response.getOutputStream());
 		} catch (Exception e) {
 			response.sendError(520, e.getMessage());
 		}
 	}
 
-	protected abstract Clustering<M> doProcess(Database database) throws ServletException;
+	protected Long getResource(HttpServletRequest request) throws ServletException {
+		return (Long) request.getAttribute("id");
+	}
+
+	protected abstract Clustering<M> doProcess(Long id, Database database) throws ServletException;
 
 	protected final Database getDatabase(InputStream input) throws Exception {
 	    MultipleObjectsBundle bundle = new MultipleObjectsBundle();

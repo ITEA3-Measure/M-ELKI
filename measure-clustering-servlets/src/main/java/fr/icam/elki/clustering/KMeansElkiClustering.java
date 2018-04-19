@@ -20,28 +20,28 @@ public class KMeansElkiClustering extends ElkiDistanceClustering<KMeansModel> {
 
 	private static final long serialVersionUID = 20180305120000L;
 
-	private int length;
+	private Map<Long, Integer> lengths;
 	
-	private int limit;
+	private Map<Long, Integer> limits;
 	
-	public void setLength(String length) throws ServletException {
+	public void setLength(Long id, String length) throws ServletException {
 		if (length == null) {
 			throw new ServletException("missing parameter 'length'");
 		} else {
 			try {
-				this.length = Integer.valueOf(length).intValue();
+				this.lengths.put(id, Integer.valueOf(length));
 			} catch (Throwable t) {
 				throw new ServletException(t);
 			}
 		}
 	}
 
-	public void setLimit(String limit) throws ServletException {
+	public void setLimit(Long id, String limit) throws ServletException {
 		if (limit == null) {
 			throw new ServletException("missing parameter 'limit'");
 		} else {
 			try {
-				this.limit = Integer.valueOf(limit).intValue();
+				this.limits.put(id, Integer.valueOf(limit));
 			} catch (Throwable t) {
 				throw new ServletException(t);
 			}
@@ -51,31 +51,34 @@ public class KMeansElkiClustering extends ElkiDistanceClustering<KMeansModel> {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		this.setLength(this.getInitParameter("length"));
-		this.setLimit(this.getInitParameter("limit"));
+		this.lengths = new HashMap<Long, Integer>(128);
+		this.limits = new HashMap<Long, Integer>(128);
+		this.setLength(0L, this.getInitParameter("length"));
+		this.setLimit(0L, this.getInitParameter("limit"));
 	}
 
 	@Override
 	public final void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		Long id = this.getResource(request);
 		Map<String, Object> parameters = new HashMap<String, Object>(3);
-		parameters.put("distance", this.getDistance());
-		parameters.put("length", length);
-		parameters.put("limit", limit);
+		parameters.put("distance", this.getDistance(id));
+		parameters.put("length", lengths.get(id));
+		parameters.put("limit", limits.get(id));
 		this.getMapper().toJson(parameters, response.getWriter());
 	}
 
 	@Override
-	protected boolean setUp(HttpServletRequest request) throws ServletException {
-		super.setUp(request);
-		this.setLength(request.getParameter("length"));
-		this.setLimit(request.getParameter("limit"));
+	protected boolean setUp(Long id, HttpServletRequest request) throws ServletException {
+		super.setUp(id, request);
+		this.setLength(id, request.getParameter("length"));
+		this.setLimit(id, request.getParameter("limit"));
 		return true;
 	}
 	
 	@Override
-	protected Clustering<KMeansModel> doProcess(Database database) throws ServletException {
+	protected Clustering<KMeansModel> doProcess(Long id, Database database) throws ServletException {
 	    RandomlyGeneratedInitialMeans init = new RandomlyGeneratedInitialMeans(RandomFactory.DEFAULT);
-	    KMeansLloyd<NumberVector> km = new KMeansLloyd<NumberVector>(distance, length, limit, init);
+	    KMeansLloyd<NumberVector> km = new KMeansLloyd<NumberVector>(distances.get(id), lengths.get(id), limits.get(id), init);
 	    return km.run(database);
 	}
 	

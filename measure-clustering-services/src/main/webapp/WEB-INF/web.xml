@@ -13,11 +13,45 @@
   <listener>
     <listener-class>fr.icam.elki.distances.ElkiDistanceManager</listener-class>
   </listener>
+  
+  <listener>
+    <listener-class>fr.icam.elki.identifiers.ElkiIdentifierManager</listener-class>
+  </listener>
+    
+  <filter>
+    <filter-name>elki-identifier-filter</filter-name>
+    <filter-class>fr.icam.elki.identifiers.ElkiIdentifierFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>elki-identifier-filter</filter-name>
+    <url-pattern>/dbscan/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>elki-identifier-filter</filter-name>
+    <url-pattern>/kmeans/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>elki-identifier-filter</filter-name>
+    <url-pattern>/em/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>elki-identifier-filter</filter-name>
+    <url-pattern>/slink/*</url-pattern>
+  </filter-mapping>
+    
+  <!-- mesaure platform -->
+  <servlet>
+    <servlet-name>measure</servlet-name>
+    <servlet-class>fr.icam.elki.measure.MeasurePlatformConnection</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <!-- distances -->
     
   <servlet>
     <servlet-name>distances</servlet-name>
     <servlet-class>fr.icam.elki.distances.ElkiDistanceProvider</servlet-class>
-    <load-on-startup>1</load-on-startup>
+    <load-on-startup>2</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>distances</servlet-name>
@@ -44,7 +78,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>dbscan</servlet-name>
-    <url-pattern>/dbscan</url-pattern>
+    <url-pattern>/dbscan/*</url-pattern>
   </servlet-mapping>
   
   <!-- kmeans -->
@@ -67,7 +101,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>kmeans</servlet-name>
-    <url-pattern>/kmeans</url-pattern>
+    <url-pattern>/kmeans/*</url-pattern>
   </servlet-mapping>
   
   <!-- em -->
@@ -90,7 +124,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>em</servlet-name>
-    <url-pattern>/em</url-pattern>
+    <url-pattern>/em/*</url-pattern>
   </servlet-mapping>
   
   <!-- slink -->
@@ -109,7 +143,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>slink</servlet-name>
-    <url-pattern>/slink</url-pattern>
+    <url-pattern>/slink/*</url-pattern>
   </servlet-mapping>
 
 </web-app>

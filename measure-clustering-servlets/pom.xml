@@ -28,5 +28,10 @@
       <artifactId>elki</artifactId>
       <version>0.7.1</version>
     </dependency>
+    <dependency>
+      <groupId>eu.measure.platform</groupId>
+      <artifactId>measure-analysis-platform</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 </project>

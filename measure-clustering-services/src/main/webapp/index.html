@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Elki</title>
+    <title>M·Elki</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-    <link rel="shortcut icon" href="https://elki-project.github.io/img/favicon.png" type="image/png">
+    <!-- link rel="shortcut icon" href="https://elki-project.github.io/img/favicon.png" type="image/png" -->
     <style>
       html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
       body {padding-top: 0;padding-bottom: 9ex;}
@@ -24,149 +24,233 @@
     </header>
     <div class="jumbotron jumbotron-fluid">
       <div class="container-fluid">
-        <h2 class="display-4">ELKI <img src="https://elki-project.github.io/img/elk200.png" alt="ELKI" height="60" width="60" /></h2>
+        <h2 class="display-4">M·ELKI <!-- img src="https://elki-project.github.io/img/elk200.png" alt="ELKI" height="60" width="60" / --></h2>
         <p class="lead">Clustering Algorithms dedicated to the MEASURE Platform and based on the ELKI Java Library</p>
       </div>
     </div>
     <section id="content" class="container-fluid">
       <div class="row">
       <div class="col">
-        <h4>Clustering Algorithms</h4>
         <div class="list-group">
           <div class="list-group-item">
             <h5 class="list-group-item-heading">DBScan</h5>
             <ul class="list-group-item-text">
-              <li>distance: {config.dbscan.distance.name}</li>
-              <li>epsilon: {config.dbscan.epsilon}</li>
-              <li>size: {config.dbscan.size}</li>
+              <li>distance: {dbscan.data.distance.name}</li>
+              <li>epsilon: {dbscan.data.epsilon}</li>
+              <li>size: {dbscan.data.size}</li>
             </ul>
             <p class="list-group-item-text text-right">
-              <button class="btn btn-default" rv-on-click="select.dbscan">Select</button>
+              <button class="btn btn-outline-primary" rv-on-click="dbscan.select">Select</button>
             </p>
           </div>
           <div class="list-group-item">
             <h5 class="list-group-item-heading">KMeans</h5>
             <ul class="list-group-item-text">
-              <li>distance: {config.kmeans.distance.name}</li>
-              <li>length: {config.kmeans.length}</li>
-              <li>limit: {config.kmeans.limit}</li>
+              <li>distance: {kmeans.data.distance.name}</li>
+              <li>length: {kmeans.data.length}</li>
+              <li>limit: {kmeans.data.limit}</li>
             </ul>
             <p class="list-group-item-text text-right">
-              <button class="btn btn-default" rv-on-click="select.kmeans">Select</button>
+              <button class="btn btn-outline-primary" rv-on-click="kmeans.select">Select</button>
             </p>
           </div>
           <div class="list-group-item">
             <h5 class="list-group-item-heading">EM</h5>
             <ul class="list-group-item-text">
-              <li>length: {config.em.length}</li>
-              <li>delta: {config.em.delta}</li>
-              <li>limit: {config.em.limit}</li>
+              <li>length: {em.data.length}</li>
+              <li>delta: {em.data.delta}</li>
+              <li>limit: {em.data.limit}</li>
             </ul>
             <p class="list-group-item-text text-right">
-              <button class="btn btn-default" rv-on-click="select.em">Select</button>
+              <button class="btn btn-outline-primary" rv-on-click="em.select">Select</button>
             </p>
           </div>
           <div class="list-group-item">
             <h5 class="list-group-item-heading">SLink</h5>
             <ul class="list-group-item-text">
-              <li>distance: {config.slink.distance.name}</li>
-              <li>size: {config.slink.size}</li>
+              <li>distance: {slink.data.distance.name}</li>
+              <li>size: {slink.data.size}</li>
             </ul>
             <p class="list-group-item-text text-right">
-              <button class="btn btn-default" rv-on-click="select.slink">Select</button>
+              <button class="btn btn-outline-primary" rv-on-click="slink.select">Select</button>
             </p>
           </div>
         </div>
       </div>
       <div class="col">
-        <form class="form" role="form" name="dbscanForm" rv-show="selected.dbscan">
+        <form class="form" role="form" name="dbscanForm" rv-show="dbscan.selected">
           <fieldset>
             <legend>Configuring DBScan</legend>
             <div class="form-group">
               <label for="dbscan.epsilon">Epsilon</label>
-              <input type="number" step="0.1" id="dbscan.epsilon" class="form-control" rv-value="dbscan.epsilon" placeholder="Epsilon" required />
+              <input type="number" step="0.1" id="dbscan.epsilon" class="form-control" rv-value="dbscan.copy.epsilon" placeholder="Epsilon" required />
             </div>
             <div class="form-group">
               <label for="dbscan.size">Size</label>
-              <input type="number" step="1" id="dbscan.size" class="form-control" rv-value="dbscan.size" placeholder="Size" required />
+              <input type="number" step="1" id="dbscan.size" class="form-control" rv-value="dbscan.copy.size" placeholder="Size" required />
             </div>
             <div class="form-group">
-              <label for="dbscan-distance">Distance Function</label>
-              <select id="dbscan-distance" class="form-control" rv-value="dbscan.distance" placeholder="Distance Function" required>
-                <option rv-each-distance="distances">{distance.name}</option>
+              <label for="dbscan.distance">Distance Function</label>
+              <select id="dbscan.distance" class="form-control" rv-on-change="dbscan.distance" placeholder="Distance Function" required>
+                <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
               </select>
             </div>
-            <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default" rv-on-click="get.dbscan"><strong>Reset</strong></button>
-               <button type="submit" class="btn" rv-on-click="put.dbscanPut" rv-disabled="dbscanForm.$invalid"><strong>Submit</strong></button>
+            <div class="form-group text-right">
+               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+               <button type="button" class="btn btn-outline-dark" rv-on-click="dbscan.select">Reset</button>
+               <button type="button" class="btn btn-primary" rv-on-click="dbscan.put">Submit</button>
              </div>
           </fieldset>
         </form>
-        <form class="form ng-cloak" role="form" name="kmeansForm" rv-show="selected.kmeans">
+        <form class="form" role="form" name="kmeansForm" rv-show="kmeans.selected">
           <fieldset>
             <legend>Configuring KMeans</legend>
             <div class="form-group">
-              <label for="kmeans.length">Length</label>
-              <input type="number" step="1" id="kmeans.length" class="form-control" rv-value="kmeans.length" placeholder="Length" required />
+              <label for="kmeans.data.length">Length</label>
+              <input type="number" step="1" id="kmeans.data.length" class="form-control" rv-value="kmeans.copy.length" placeholder="Length" required />
             </div>
             <div class="form-group">
-              <label for="kmeans.limit">Limit</label>
-              <input type="number" step="1" id="kmeans.limit" class="form-control" rv-value="kmeans.limit" placeholder="Limit" required />
+              <label for="kmeans.data.limit">Limit</label>
+              <input type="number" step="1" id="kmeans.data.limit" class="form-control" rv-value="kmeans.copy.limit" placeholder="Limit" required />
             </div>
             <div class="form-group">
-              <label for="kmeans.distance">Distance Function</label>
-              <select id="kmeans.distance" class="form-control" rv-value="kmeans.distance" placeholder="Distance Function" required>
-                <option rv-each-distance="distances">{distance.name}</option>
+              <label for="kmeans.data.distance">Distance Function</label>
+              <select id="kmeans.data.distance" class="form-control" rv-on-change="kmeans.distance" placeholder="Distance Function" required>
+                <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
               </select>
             </div>
-            <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default" rv-on-click="get.kmeans"><strong>Reset</strong></button>
-               <button type="submit" class="btn" rv-on-click="put.kmeans" rv-disabled="kmeansForm.$invalid"><strong>Submit</strong></button>
+            <div class="form-group text-right">
+               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+               <button type="button" class="btn outline-dark" rv-on-click="kmeans.select">Reset</button>
+               <button type="button" class="btn btn-primary" rv-on-click="kmeans.put">Submit</button>
              </div>
           </fieldset>
         </form>
-        <form class="form ng-cloak" role="form" name="emForm" rv-show="selected.em">
+        <form class="form" role="form" name="emForm" rv-show="em.selected">
           <fieldset>
             <legend>Configuring EM</legend>
             <div class="form-group">
-              <label for="em.delta">Delta</label>
-              <input type="number" step="1.0" id="em.delta" class="form-control" rv-value="em.delta" placeholder="Delta" required />
+              <label for="em.data.delta">Delta</label>
+              <input type="number" step="1.0" id="em.data.delta" class="form-control" rv-value="em.copy.delta" placeholder="Delta" required />
             </div>
             <div class="form-group">
-              <label for="em.length">Length</label>
-              <input type="number" step="1" id="em.length" class="form-control" rv-value="em.length" placeholder="Length" required />
+              <label for="em.data.length">Length</label>
+              <input type="number" step="1" id="em.data.length" class="form-control" rv-value="em.copy.length" placeholder="Length" required />
             </div>
             <div class="form-group">
-              <label for="em.limit">Limit</label>
-              <input type="number" step="1" id="em.limit" class="form-control" rv-value="em.limit" placeholder="Limit" required />
+              <label for="em.data.limit">Limit</label>
+              <input type="number" step="1" id="em.data.limit" class="form-control" rv-value="em.copy.limit" placeholder="Limit" required />
             </div>
-            <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default" rv-on-click="get.em"><strong>Reset</strong></button>
-               <button type="submit" class="btn" rv-on-click="put.em" rv-disabled="emForm.$invalid"><strong>Submit</strong></button>
+            <div class="form-group text-right">
+               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+               <button type="button" class="btn btn-outline-dark" rv-on-click="em.select">Reset</button>
+               <button type="button" class="btn btn-primary" rv-on-click="em.put">Submit</button>
              </div>
           </fieldset>
         </form>
-        <form class="form ng-cloak" role="form" name="slinkForm" rv-show="selected.slink">
+        <form class="form" role="form" name="slinkForm" rv-show="slink.selected">
           <fieldset>
             <legend>Configuring SLink</legend>
             <div class="form-group">
-              <label for="slink.size">Size</label>
-              <input type="number" step="1" id="slink.size" class="form-control" rv-value="slink.size" placeholder="Size" required />
+              <label for="slink.data.size">Size</label>
+              <input type="number" step="1" id="slink.data.size" class="form-control" rv-value="slink.copy.size" placeholder="Size" required />
             </div>
             <div class="form-group">
-              <label for="slink.distance">Distance Function</label>
-              <select id="slink.distance" class="form-control" rv-value="slink.distance" placeholder="Distance Function" required>
-               <option rv-each-distance="distances">{distance.name}</option>
+              <label for="slink.data.distance">Distance Function</label>
+              <select id="slink.data.distance" class="form-control" rv-on-change="slink.distance" placeholder="Distance Function" required>
+               <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
               </select>
             </div>
-            <div class="form-group pull-right">
-               <button type="reset" class="btn btn-default" rv-on-click="get.slinkG"><strong>Reset</strong></button>
-               <button type="submit" class="btn" rv-on-click="put.slink" rv-disabled="slinkForm.$invalid"><strong>Submit</strong></button>
+            <div class="form-group text-right">
+               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+               <button type="button" class="btn btn-outline-dark" rv-on-click="slink.select">Reset</button>
+               <button type="button" class="btn btn-primary" rv-on-click="slink.put">Submit</button>
              </div>
           </fieldset>
         </form>
       </div>
-      <div class="col"></div>
+      <div class="col">
+        <form name="dbscanFileForm" class="form" rv-show="dbscan.selected">
+          <fieldset>
+            <legend>Processing DBScan</legend>
+            <div class="form-group">
+              <input type="file" class="form-control-file" rv-on-change="dbscan.pick" placeholder="File" required />
+            </div>
+            <div class="form-group text-right">
+              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+              <button type="button" class="btn btn-primary" rv-on-click="dbscan.upload">Submit</button>
+            </div>
+          </fieldset>
+        </form>
+        <div rv-show="dbscan.selected">
+          <div rv-each-cluster="dbscan.clusters">
+            <h6 rv-text="cluster.name"></h6>
+            <ul>
+              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
+            </ul>
+          </div>
+        </div>
+        <form name="kmeansFileForm" class="form" rv-show="kmeans.selected">
+          <fieldset>
+            <legend>Processing KMeans</legend>
+            <div class="form-group">
+              <input type="file" class="form-control-file" rv-on-change="kmeans.pick" placeholder="File" required />
+            </div>
+            <div class="form-group text-right">
+              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+              <button type="button" class="btn btn-primary" rv-on-click="kmeans.upload">Submit</button>
+            </div>
+          </fieldset>
+        </form>
+        <div rv-show="kmeans.selected">
+          <div rv-each-cluster="kmeans.clusters">
+            <h6 rv-text="cluster.name"></h6>
+            <ul>
+              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
+            </ul>
+          </div>
+        </div>
+        <form name="emFileForm" class="form" rv-show="em.selected">
+          <fieldset>
+            <legend>Processing EM</legend>
+            <div class="form-group">
+              <input type="file" class="form-control-file" rv-on-change="em.pick" placeholder="File" required />
+            </div>
+            <div class="form-group text-right">
+              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+              <button type="button" class="btn btn-primary" rv-on-click="em.upload">Submit</button>
+            </div>
+          </fieldset>
+        </form>
+        <div rv-show="em.selected">
+          <div rv-each-cluster="em.clusters">
+            <h6 rv-text="cluster.name"></h6>
+            <ul>
+              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
+            </ul>
+          </div>
+        </div>
+        <form name="slinkFileForm" class="form" rv-show="slink.selected">
+          <fieldset>
+            <legend>Processing SLink</legend>
+            <div class="form-group">
+              <input type="file" class="form-control-file" rv-on-change="slink.pick" placeholder="File" required />
+            </div>
+            <div class="form-group text-right">
+              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+              <button type="button" class="btn btn-primary" rv-on-click="slink.upload">Submit</button>
+            </div>
+          </fieldset>
+        </form>
+        <div rv-show="slink.selected">
+          <div rv-each-cluster="slink.clusters">
+            <h6 rv-text="cluster.name"></h6>
+            <ul>
+              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
       </div>
     </section>
     <footer class="footer fixed-bottom align-text-bottom">
@@ -176,272 +260,450 @@
     </footer>
   </body>
   <script type="text/javascript">
+  var elki = {};
+  elki.get = {};
+  elki.put = {};
+  elki.post = {};
+  
+  elki.get.distances = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+	  req.onload = function(event) {
+	  if (this.status === 200) {
+	    onSuccess(JSON.parse(this.responseText));
+	  } else {
+		onError(JSON.parse(this.responseText));
+	  }
+	};
+	req.onerror = function(event) {
+	  onError(JSON.parse(this.responseText));
+	}
+	req.open('GET','/elki/distances', true);
+	req.send(null);
+  };
+	    
+  elki.get.dbscan = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/dbscan', true);
+    req.send(null);    
+  };
+	    
+  elki.get.kmeans = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/kmeans', true);
+    req.send(null);    
+  };
+	    
+  elki.get.em = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/em', true);
+    req.send(null);    
+  };
+	    
+  elki.get.slink = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/slink', true);
+    req.send(null);    
+  };
+
+  elki.put.dbscan = function(data, onSuccess, onError) {
+	const parameters = "?" + "distance=" + data.distance.id + "&" + "epsilon=" + data.epsilon + "&" + "size=" + data.size;
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('PUT','/elki/dbscan' + parameters, true);
+    req.send(null);
+  };
+
+  elki.put.kmeans = function(data, onSuccess, onError) {
+	const parameters = "?" + "distance=" + data.distance.id + "&" + "length=" + data.length + "&" + "limit=" + data.limit;
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('PUT','/elki/kmeans' + parameters, true);
+    req.send(null);
+  };
+
+  elki.put.em = function(data, onSuccess, onError) {
+	const parameters = "?" + "length=" + data.length + "&" + "delta=" + data.delta + "&" + "limit=" + data.limit;
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('PUT','/elki/em' + parameters, true);
+    req.send(null);
+  };
+
+  elki.put.slink = function(data, onSuccess, onError) {
+	const parameters = "?" + "distance=" + data.distance.id + "&" + "size=" + data.size;
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('PUT','/elki/slink' + parameters, true);
+    req.send(null);
+  };
+
+  elki.post.dbscan = function(data, onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/dbscan', true);
+    req.send(data);
+  };
+
+  elki.post.kmeans = function(data, onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/kmeans', true);
+    req.send(data);
+  };
+
+  elki.post.em = function(data, onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/em', true);
+    req.send(data);
+  };
+
+  elki.post.slink = function(data, onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/slink', true);
+    req.send(data);
+  };
+  </script>
+  <script type="text/javascript">
   
   var content = {};
   rivets.bind($('#content'), content);
   
-  content.select = {};
-  content.selected = {};
-  content.config = {};
-  content.get = {};
-  content.put = {};
+  content.distances = [];
   content.dbscan = {};
+  content.dbscan.file = null;
   content.kmeans = {};
   content.em = {};
   content.slink = {};
   
   var distances = function() {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        content.distances = jQuery.parseJSON(this.responseText);
-        console.log(distances);
-      } else { }
-    };
-    req.onerror = function(event) {
-      distances = [];
-    }
-    req.open('GET','/elki/distances', true);
-    req.send(null);
-  }
+    elki.get.distances(function onSuccess(response){
+      content.distances = response;
+    },function onError(response) {
+      content.distances = [];
+    });
+  };
     
-  content.get.dbscan = function() {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        content.config.dbscan = jQuery.parseJSON(this.responseText);
-      } else { }
-    };
-    req.onerror = function(event) { }
-    req.open('GET','/elki/dbscan', true);
-    req.send(null);    
-  }
+  content.dbscan.get = function() {
+    elki.get.dbscan(function onSuccess(response){
+      content.dbscan.data = response;
+	},function onError(response){
+	  content.dbscan.data = {};
+	});
+  };
+  
+  content.dbscan.put = function() { 
+    elki.put.dbscan(content.dbscan.copy, function onSuccess(response){
+      content.clear();	
+      content.dbscan.get();
+	},function onError(response){
+      content.clear();
+      content.dbscan.get();
+	});
+  };
     
-  content.get.kmeans = function() {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        content.config.kmeans = jQuery.parseJSON(this.responseText);
-      } else { }
-    };
-    req.onerror = function(event) { }
-    req.open('GET','/elki/kmeans', true);
-    req.send(null);    
-  }
-    
-  content.get.em = function() {
-   const req = new XMLHttpRequest();
-   req.onload = function(event) {
-     if (this.status === 200) {
-       content.config.em = jQuery.parseJSON(this.responseText);
-     } else { }
-   };
-   req.onerror = function(event) { }
-   req.open('GET','/elki/em', true);
-   req.send(null);    
-  }
-    
-  content.get.slink = function() {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        content.config.slink = jQuery.parseJSON(this.responseText);
-      } else { }
-    };
-    req.onerror = function(event) { }
-    req.open('GET','/elki/slink', true);
-    req.send(null);    
-  }
+  content.kmeans.get = function() {
+    elki.get.kmeans(function onSuccess(response){
+      content.kmeans.data = response;
+	},function onError(response){
+	  content.kmeans.data = {};
+	});
+  };
 
-  content.get.dbscan();
-  content.get.kmeans();
-  content.get.em();
-  content.get.slink();
+  content.kmeans.put = function() { 
+    elki.put.kmeans(content.kmeans.copy, function onSuccess(response){
+      content.clear();	
+      content.kmeans.get();
+	},function onError(response){
+      content.clear();
+      content.kmeans.get();
+	});
+  };
+  
+  content.em.get = function() {
+    elki.get.em(function onSuccess(response){
+      content.em.data = response;
+	},function onError(response){
+	  content.em.data = {};
+	});
+  };
+
+  content.em.put = function() { 
+    elki.put.em(content.em.copy, function onSuccess(response){
+      content.clear();	
+      content.em.get();
+	},function onError(response){
+      content.clear();
+      content.em.get();
+	});
+  };
+  
+  content.slink.get = function() {
+    elki.get.slink(function onSuccess(response){
+      content.slink.data = response;
+	},function onError(response){
+	  content.slink.data = {};
+	});
+  };
+
+  content.slink.put = function() { 
+    elki.put.slink(content.slink.copy, function onSuccess(response){
+      content.clear();	
+      content.slink.get();
+	},function onError(response){
+      content.clear();
+      content.slink.get();
+	});
+  };
+  
+  content.dbscan.pick = function(event) {
+	content.dbscan.file = event.target.files[0];
+  }
+  
+  content.dbscan.upload = function() {
+    var file = content.dbscan.file;
+	var type = file.type;
+    var reader = new FileReader();
+	reader.readAsText(content.dbscan.file);
+	reader.onload = function(event) {
+	  var data = event.target.result;
+	  elki.post.dbscan(data, function onSuccess(response){
+		content.dbscan.clusters = response;
+   	  }, function onError(response) {
+   		content.dbscan.clusters = [];
+   	  });
+    };
+  };
+  
+  content.kmeans.pick = function(event) {
+	content.kmeans.file = event.target.files[0];
+  }
+  
+  content.kmeans.upload = function() {
+    var file = content.kmeans.file;
+	var type = file.type;
+    var reader = new FileReader();
+	reader.readAsText(content.kmeans.file);
+	reader.onload = function(event) {
+	  var data = event.target.result;
+	  elki.post.kmeans(data, function onSuccess(response){
+		content.kmeans.clusters = response;
+   	  }, function onError(response) {
+   		content.kmeans.clusters = [];
+   	  });
+    };
+  };
+  
+  content.em.pick = function(event) {
+	content.em.file = event.target.files[0];
+  }
+  
+  content.em.upload = function() {
+    var file = content.em.file;
+	var type = file.type;
+    var reader = new FileReader();
+	reader.readAsText(content.em.file);
+	reader.onload = function(event) {
+	  var data = event.target.result;
+	  elki.post.em(data, function onSuccess(response){
+		content.em.clusters = response;
+   	  }, function onError(response) {
+   		content.em.clusters = [];
+   	  });
+    };
+  };
+  
+  content.slink.pick = function(event) {
+	content.slink.file = event.target.files[0];
+  }
+  
+  content.slink.upload = function() {
+    var file = content.slink.file;
+	var type = file.type;
+    var reader = new FileReader();
+	reader.readAsText(content.slink.file);
+	reader.onload = function(event) {
+	  var data = event.target.result;
+	  elki.post.slink(data, function onSuccess(response){
+		content.slink.clusters = response;
+   	  }, function onError(response) {
+   		content.slink.clusters = [];
+   	  });
+    };
+  };
+  
   distances();
-    
-  content.select.dbscan = function() {
-    content.selected.dbscan = true;
-    content.selected.kmeans = false;
-    content.selected.em = false;
-    content.selected.slink = false;
-    console.log(content.selected);
-  }
-  content.select.kmeans = function() {
-    content.selected.dbscan = false;
-    content.selected.kmeans = true;
-    content.selected.em = false;
-    content.selected.slink = false;
-	console.log(content.selected);
-  }
-  content.select.em = function() {
-    content.selected.dbscan = false;
-    content.selected.kmeans = false;
-    content.selected.em = true;
-    content.selected.slink = false;
-    console.log(content.selected);
-  }
-  content.select.slink = function() {
-	content.selected.dbscan = false;
-	content.selected.kmeans = false;
-	content.selected.em = false;
-	content.selected.slink = true;
-    console.log(content.selected);
-  }
+  content.dbscan.get();
+  content.kmeans.get();
+  content.em.get();
+  content.slink.get();
+  
+  content.clear = function () {
+    content.dbscan.selected = false;
+    content.kmeans.selected = false;
+    content.em.selected = false;
+    content.slink.selected = false;	  
+  };
+  
+  content.dbscan.distance = function(event) {
+	content.distances.forEach(function (d) {
+	  if (d.id == event.target.value) {
+		content.dbscan.copy.distance = jQuery.extend(true, {}, d);
+	  }
+	});
+  };
+  
+  content.kmeans.distance = function(event) {
+	content.distances.forEach(function (d) {
+	  if (d.id == event.target.value) {
+		content.kmeans.copy.distance = jQuery.extend(true, {}, d);
+	  }
+	});
+  };
+  
+  content.slink.distance = function(event) {
+	content.distances.forEach(function (d) {
+	  if (d.id == event.target.value) {
+		content.slink.copy.distance = jQuery.extend(true, {}, d);
+	  }
+	});
+  };
+  
+  content.dbscan.select = function() {
+    content.clear();
+    content.dbscan.copy = jQuery.extend(true, {}, content.dbscan.data);
+    content.dbscan.selected = true;
+  };
+  
+  content.kmeans.select = function() {
+    content.clear();
+    content.kmeans.copy = jQuery.extend(true, {}, content.kmeans.data);
+    content.kmeans.selected = true;
+  };
+  
+  content.em.select = function() {
+    content.clear();
+    content.em.copy = jQuery.extend(true, {}, content.em.data);
+    content.em.selected = true;
+  };
+  
+  content.slink.select = function() {
+    content.clear();
+    content.slink.copy = jQuery.extend(true, {}, content.slink.data);
+    content.slink.selected = true;
+  };
   </script>
-  <!-- script type="text/javascript">
-  var app = angular.module('app',[]);
-
-  app.controller('controller', function ($scope, $http) {
-  
-    $scope.selected = null;
-  
-  $scope.select = function(algorithm) {
-    $scope.selected = algorithm;
-    console.log($scope.dbscan);
-  }
-
-  $scope.distances = [];
-  
-  $scope.config = {};
-  
-  $scope.dbscan = {};
-  $scope.kmeans = {};
-  $scope.em = {};
-  $scope.slink = {};
-  
-  $scope.dbscanDistance = function(distance) {
-    $scope.dbscan.distance = distance;
-    console.log($scope.dbscan);
-  }
-  
-  $scope.kmeansDistance = function(distance) {
-    $scope.kmeans.distance = distance;
-  }
-  
-  $scope.slinkDistance = function(distance) {
-    $scope.slink.distance = distance;
-  }
-
-    var distanceGet = function() {
-      $http({method:'GET',url:'/elki/distances'})
-      .then(function onSuccess(response) {
-        $scope.distances = response.data;
-      }, function onError(response) {
-        $scope.distances = [];
-      });
-    }
-  
-    $scope.dbscanGet = function() {
-      $http({method:'GET',url:'/elki/dbscan'})
-    .then(function onSuccess(response) {
-    $scope.config.dbscan = response.data;
-      $scope.dbscan = angular.copy($scope.config.dbscan);
-      }, function onError(response) {
-    console.log($scope.dbscan);
-    $scope.config.dbscan = {};
-    $scope.dbscan = {};
-      });
-    }
-    
-    $scope.kmeansGet = function() {
-      $http({method:'GET',url:'/elki/kmeans'})
-      .then(function onSuccess(response) {
-      $scope.config.kmeans = response.data;
-        $scope.kmeans = angular.copy($scope.config.kmeans);
-      }, function onError(response) {
-      $scope.config.kmeans = {};
-      $scope.kmeans = {};
-      });
-    }
-
-    $scope.emGet = function() {
-      $http({method:'GET',url:'/elki/em'})
-      .then(function onSuccess(response) {
-        $scope.config.em = response.data;
-        $scope.em = angular.copy($scope.config.em);
-      }, function onError(response) {
-      $scope.config.em = {};
-        $scope.em = {};
-      });
-    }
-
-    $scope.slinkGet = function() {
-      $http({method:'GET',url:'/elki/slink'})
-      .then(function onSuccess(response) {
-        $scope.config.slink = response.data;
-        $scope.slink = angular.copy($scope.config.slink);
-      }, function onError(response) {
-      $scope.config.slink = {};
-        $scope.slink = {};
-      });
-    }
-  
-  $scope.dbscanPut = function() {
-    console.log("dbscan");
-    var parameters = {distance:$scope.dbscan.distance.id,epsilon:$scope.dbscan.epsilon,size:$scope.dbscan.size};
-      $http({method:'PUT',url:'/elki/dbscan',params:parameters})
-    .then(function onSuccess(response) {
-      var done = response.data;
-      if (done) {
-        $scope.selected = null;
-        $scope.dbscanGet();
-      }
-      }, function onError(response) {
-        console.log(response.data);
-      });
-    }
-  
-  $scope.kmeansPut = function() {
-      console.log("kmeans");
-    var parameters = {distance:$scope.kmeans.distance.id,length:$scope.kmeans.length,limit:$scope.kmeans.limit};
-      $http({method:'PUT',url:'/elki/kmeans',params:parameters})
-    .then(function onSuccess(response) {
-      var done = response.data;
-      if (done) {
-        $scope.selected = null;
-        $scope.kmeansGet();
-      }
-      }, function onError(response) {
-        console.log(response.data);
-      });
-    }
-  
-  $scope.emPut = function() {
-    console.log("em");
-    var parameters = {delta:$scope.em.delta,length:$scope.em.length,limit:$scope.em.limit};
-      $http({method:'PUT',url:'/elki/em',params:parameters})
-    .then(function onSuccess(response) {
-      var done = response.data;
-      if (done) {
-        $scope.selected = null;
-        $scope.emGet();
-      }
-      }, function onError(response) {
-        console.log(response.data);
-      });
-    }
-  
-  $scope.slinkPut = function() {
-      console.log("slink");
-    var parameters = {distance:$scope.slink.distance.id,size:$scope.slink.size};
-      $http({method:'PUT',url:'/elki/slink',params:parameters})
-    .then(function onSuccess(response) {
-      var done = response.data;
-      if (done) {
-        $scope.selected = null;
-        $scope.slinkGet();
-      }
-      }, function onError(response) {
-        console.log(response.data);
-      });
-  }
-  
-  distanceGet();
-  $scope.dbscanGet();
-  $scope.kmeansGet();
-  $scope.emGet();
-  $scope.slinkGet();
-  
-  });
-  </script -->
 </html>
