@@ -1,6 +1,5 @@
 package fr.icam.elki.clustering;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -15,36 +14,31 @@ public abstract class ElkiDistanceClustering<M extends Model> extends ElkiCluste
 
 	private static final long serialVersionUID = 20180305140000L;
 	
-	private Map<String, NumberVectorDistanceFunction<NumberVector>> availableDistances;
-
-	protected Map<Long, NumberVectorDistanceFunction<NumberVector>> distances;
+	private Map<String, NumberVectorDistanceFunction<NumberVector>> distances;
 	
-	protected final void setDistance(Long id, String name) throws ServletException {
-		if (name == null) {
-			throw new ServletException("missing parameter 'distance' for id=" + id);
+	protected abstract void setDistance(Long id, Distance distance) throws ServletException;
+	
+	protected abstract Distance getDistance(Long id) throws ServletException;
+	
+	protected final Distance getDistance(String name) throws ServletException {
+		NumberVectorDistanceFunction<NumberVector> distance = distances.get(name);
+		if (distance == null) {
+			throw new ServletException("unknown distance class name '" + name + "'");
 		} else {
-			NumberVectorDistanceFunction<NumberVector> distance = availableDistances.get(name);
-			if (distance == null) {
-				throw new ServletException("unknown parameter 'distance' value: '" + name + "'");
-			} else {
-				this.distances.put(id, distance);
-			}
+			return new Distance(name, name.replace("-", " "));
 		}
 	}
-	
-	protected final Distance getDistance(Long id) throws ServletException {
-		if (distances.get(id) == null) {
-			throw new ServletException("undefined distance for id=" + id);
+
+	protected final NumberVectorDistanceFunction<NumberVector> getInstanceOf(Distance distance) throws ServletException {
+		if (distance == null) {
+			throw new ServletException("undefined parameter 'distance'");
 		} else {
-			for (String name : availableDistances.keySet()) {
-				NumberVectorDistanceFunction<NumberVector> distance = availableDistances.get(name);
-				String className = distance.getClass().getCanonicalName();
-				String distanceClassName = this.distances.get(id).getClass().getCanonicalName();
-				if (className.compareTo(distanceClassName) == 0) {
-					return new Distance(name, name.replace("-", " "));
-				}
+			NumberVectorDistanceFunction<NumberVector> d = distances.get(distance.getId());
+			if (d == null) {
+				throw new ServletException("unknown parameter 'distance' value: '" + distance.getName() + "'");
+			} else {
+				return d;
 			}
-			throw new ServletException("unknown distance class name '" + distances.getClass().getSimpleName() + "' for id=" + 0);
 		}
 	}
 	
@@ -52,14 +46,13 @@ public abstract class ElkiDistanceClustering<M extends Model> extends ElkiCluste
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		this.distances = new HashMap<Long, NumberVectorDistanceFunction<NumberVector>>(128);
-		availableDistances = (Map<String, NumberVectorDistanceFunction<NumberVector>>) this.getServletContext().getAttribute("distances");
-		this.setDistance(0L, this.getInitParameter("distance"));
+		distances = (Map<String, NumberVectorDistanceFunction<NumberVector>>) this.getServletContext().getAttribute("distances");
+		this.setDistance(0L, this.getDistance(this.getInitParameter("distance")));
 	}
 
 	@Override
 	protected boolean setUp(Long id, HttpServletRequest request) throws ServletException {
-		this.setDistance(id, request.getParameter("distance"));
+		this.setDistance(id, this.getDistance(request.getParameter("distance")));
 		return true;
 	}
 	

@@ -1,20 +1,19 @@
 package eu.measure.platform.analysis.api;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AlertReport {
 	
-	private Date from;
+	private String from;
 	
 	private List<AlertData> alerts;
 	
-	public Date getFrom() {
+	public String getFrom() {
 		return from;
 	}
 
-	public void setFrom(Date from) {
+	public void setFrom(String from) {
 		this.from = from;
 	}
 

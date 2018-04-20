@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.servlet.ServletException;
@@ -31,21 +32,30 @@ import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.MultipleObjectsBundleDatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.bundle.MultipleObjectsBundle;
+import fr.icam.elki.identifiers.ElkiConfiguration;
 
 public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 
 	private static final long serialVersionUID = 20180305100000L;
 		
+	private Map<Long, ElkiConfiguration> identifiers;
+	
+	protected ElkiConfiguration getConfiguration(Long id) {
+		return identifiers.get(id);
+	}
+	
 	private Gson mapper;
 	
 	protected Gson getMapper() {
 		return mapper;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		mapper = new Gson();
+		identifiers = (Map<Long, ElkiConfiguration>) this.getServletContext().getAttribute("identifiers");
 	}
 
 	protected abstract boolean setUp(Long id, HttpServletRequest request) throws ServletException;

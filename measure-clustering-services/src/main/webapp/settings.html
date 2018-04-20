@@ -6,23 +6,13 @@
     <title>M·Elki</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css">
-    <!-- link rel="shortcut icon" href="https://elki-project.github.io/img/favicon.png" type="image/png" -->
-    <style>
-      html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
-      body {padding-top: 0;padding-bottom: 9ex;}
-      footer {padding-top: 2ex;padding-bottom: 0;color: white;}
-      .footer {z-index: 2;}
-    </style>
   </head>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
   <body>
-    <header class="navbar navbar-expand-lg navbar-light bg-dark">
-    </header>
-    <div class="jumbotron jumbotron-fluid">
+    <div class="bg-light">
       <div class="container-fluid">
         <h2 class="display-4">M·ELKI <!-- img src="https://elki-project.github.io/img/elk200.png" alt="ELKI" height="60" width="60" / --></h2>
         <p class="lead">Clustering Algorithms dedicated to the MEASURE Platform and based on the ELKI Java Library</p>
@@ -169,95 +159,8 @@
           </fieldset>
         </form>
       </div>
-      <div class="col">
-        <form name="dbscanFileForm" class="form" rv-show="dbscan.selected">
-          <fieldset>
-            <legend>Processing DBScan</legend>
-            <div class="form-group">
-              <input type="file" class="form-control-file" rv-on-change="dbscan.pick" placeholder="File" required />
-            </div>
-            <div class="form-group text-right">
-              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-              <button type="button" class="btn btn-primary" rv-on-click="dbscan.upload">Submit</button>
-            </div>
-          </fieldset>
-        </form>
-        <div rv-show="dbscan.selected">
-          <div rv-each-cluster="dbscan.clusters">
-            <h6 rv-text="cluster.name"></h6>
-            <ul>
-              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
-            </ul>
-          </div>
-        </div>
-        <form name="kmeansFileForm" class="form" rv-show="kmeans.selected">
-          <fieldset>
-            <legend>Processing KMeans</legend>
-            <div class="form-group">
-              <input type="file" class="form-control-file" rv-on-change="kmeans.pick" placeholder="File" required />
-            </div>
-            <div class="form-group text-right">
-              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-              <button type="button" class="btn btn-primary" rv-on-click="kmeans.upload">Submit</button>
-            </div>
-          </fieldset>
-        </form>
-        <div rv-show="kmeans.selected">
-          <div rv-each-cluster="kmeans.clusters">
-            <h6 rv-text="cluster.name"></h6>
-            <ul>
-              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
-            </ul>
-          </div>
-        </div>
-        <form name="emFileForm" class="form" rv-show="em.selected">
-          <fieldset>
-            <legend>Processing EM</legend>
-            <div class="form-group">
-              <input type="file" class="form-control-file" rv-on-change="em.pick" placeholder="File" required />
-            </div>
-            <div class="form-group text-right">
-              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-              <button type="button" class="btn btn-primary" rv-on-click="em.upload">Submit</button>
-            </div>
-          </fieldset>
-        </form>
-        <div rv-show="em.selected">
-          <div rv-each-cluster="em.clusters">
-            <h6 rv-text="cluster.name"></h6>
-            <ul>
-              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
-            </ul>
-          </div>
-        </div>
-        <form name="slinkFileForm" class="form" rv-show="slink.selected">
-          <fieldset>
-            <legend>Processing SLink</legend>
-            <div class="form-group">
-              <input type="file" class="form-control-file" rv-on-change="slink.pick" placeholder="File" required />
-            </div>
-            <div class="form-group text-right">
-              <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-              <button type="button" class="btn btn-primary" rv-on-click="slink.upload">Submit</button>
-            </div>
-          </fieldset>
-        </form>
-        <div rv-show="slink.selected">
-          <div rv-each-cluster="slink.clusters">
-            <h6 rv-text="cluster.name"></h6>
-            <ul>
-              <li rv-each-instance="cluster.instances" rv-text="instance.id"></li>
-            </ul>
-          </div>
-        </div>
-      </div>
       </div>
     </section>
-    <footer class="footer fixed-bottom align-text-bottom">
-      <div class="navbar navbar-expand-lg navbar-light bg-dark">
-        <p class="text-center">Copyright © 2018. ICAM. All rights reserved.</p>
-      </div>
-    </footer>
   </body>
   <script type="text/javascript">
   var id = 0;
@@ -425,70 +328,6 @@
     req.open('PUT','/elki/slink?id=' + id + parameters, true);
     req.send(null);
   };
-
-  elki.post.dbscan = function(data, onSuccess, onError) {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        onSuccess(JSON.parse(this.responseText));
-      } else {
-    	onError(JSON.parse(this.responseText));
-      }
-    };
-    req.onerror = function(event) {
-      onError(JSON.parse(this.responseText));
-    }
-    req.open('POST','/elki/dbscan?id=' + id, true);
-    req.send(data);
-  };
-
-  elki.post.kmeans = function(data, onSuccess, onError) {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        onSuccess(JSON.parse(this.responseText));
-      } else {
-    	onError(JSON.parse(this.responseText));
-      }
-    };
-    req.onerror = function(event) {
-      onError(JSON.parse(this.responseText));
-    }
-    req.open('POST','/elki/kmeans?id=' + id, true);
-    req.send(data);
-  };
-
-  elki.post.em = function(data, onSuccess, onError) {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        onSuccess(JSON.parse(this.responseText));
-      } else {
-    	onError(JSON.parse(this.responseText));
-      }
-    };
-    req.onerror = function(event) {
-      onError(JSON.parse(this.responseText));
-    }
-    req.open('POST','/elki/em?id=' + id, true);
-    req.send(data);
-  };
-
-  elki.post.slink = function(data, onSuccess, onError) {
-    const req = new XMLHttpRequest();
-    req.onload = function(event) {
-      if (this.status === 200) {
-        onSuccess(JSON.parse(this.responseText));
-      } else {
-    	onError(JSON.parse(this.responseText));
-      }
-    };
-    req.onerror = function(event) {
-      onError(JSON.parse(this.responseText));
-    }
-    req.open('POST','/elki/slink?id=' + id, true);
-    req.send(data);
-  };
   </script>
   <script type="text/javascript">
   
@@ -497,7 +336,6 @@
   
   content.distances = [];
   content.dbscan = {};
-  content.dbscan.file = null;
   content.kmeans = {};
   content.em = {};
   content.slink = {};
@@ -581,83 +419,7 @@
       content.slink.get();
 	});
   };
-  
-  content.dbscan.pick = function(event) {
-	content.dbscan.file = event.target.files[0];
-  }
-  
-  content.dbscan.upload = function() {
-    var file = content.dbscan.file;
-	var type = file.type;
-    var reader = new FileReader();
-	reader.readAsText(content.dbscan.file);
-	reader.onload = function(event) {
-	  var data = event.target.result;
-	  elki.post.dbscan(data, function onSuccess(response){
-		content.dbscan.clusters = response;
-   	  }, function onError(response) {
-   		content.dbscan.clusters = [];
-   	  });
-    };
-  };
-  
-  content.kmeans.pick = function(event) {
-	content.kmeans.file = event.target.files[0];
-  }
-  
-  content.kmeans.upload = function() {
-    var file = content.kmeans.file;
-	var type = file.type;
-    var reader = new FileReader();
-	reader.readAsText(content.kmeans.file);
-	reader.onload = function(event) {
-	  var data = event.target.result;
-	  elki.post.kmeans(data, function onSuccess(response){
-		content.kmeans.clusters = response;
-   	  }, function onError(response) {
-   		content.kmeans.clusters = [];
-   	  });
-    };
-  };
-  
-  content.em.pick = function(event) {
-	content.em.file = event.target.files[0];
-  }
-  
-  content.em.upload = function() {
-    var file = content.em.file;
-	var type = file.type;
-    var reader = new FileReader();
-	reader.readAsText(content.em.file);
-	reader.onload = function(event) {
-	  var data = event.target.result;
-	  elki.post.em(data, function onSuccess(response){
-		content.em.clusters = response;
-   	  }, function onError(response) {
-   		content.em.clusters = [];
-   	  });
-    };
-  };
-  
-  content.slink.pick = function(event) {
-	content.slink.file = event.target.files[0];
-  }
-  
-  content.slink.upload = function() {
-    var file = content.slink.file;
-	var type = file.type;
-    var reader = new FileReader();
-	reader.readAsText(content.slink.file);
-	reader.onload = function(event) {
-	  var data = event.target.result;
-	  elki.post.slink(data, function onSuccess(response){
-		content.slink.clusters = response;
-   	  }, function onError(response) {
-   		content.slink.clusters = [];
-   	  });
-    };
-  };
-  
+    
   distances();
   content.dbscan.get();
   content.kmeans.get();

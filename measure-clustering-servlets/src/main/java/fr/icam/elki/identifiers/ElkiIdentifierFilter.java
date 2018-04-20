@@ -1,7 +1,7 @@
 package fr.icam.elki.identifiers;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,12 +12,12 @@ import javax.servlet.ServletResponse;
 
 public class ElkiIdentifierFilter implements Filter {
 
-	private List<Long> identifiers;
+	private Map<Long, ElkiConfiguration> identifiers;
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		identifiers = (List<Long>) config.getServletContext().getAttribute("identifiers");
+		identifiers = (Map<Long, ElkiConfiguration>) config.getServletContext().getAttribute("identifiers");
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class ElkiIdentifierFilter implements Filter {
 		} else {
 			try { 
 				Long id = Long.valueOf(pid);
-				if (identifiers.contains(id)) {
+				if (identifiers.containsKey(id)) {
 					request.setAttribute("id", id);
 				} else {
 					throw new ServletException("unknown analysis ID: " + id);		

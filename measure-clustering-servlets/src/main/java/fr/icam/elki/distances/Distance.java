@@ -27,5 +27,11 @@ public class Distance {
 		this.setId(id);
 		this.setName(name);
 	}
+
+	public Distance(Distance distance) {
+		super();
+		this.setId(distance.getId());
+		this.setName(distance.getName());
+	}
 	
 }

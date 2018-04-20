@@ -6,11 +6,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.httpclient.commons.AbstractClient;
 
-public class MeasurePlatformClient extends AbstractClient {
+import eu.measure.platform.api.MeasurePlatformClient;
 
-	public MeasurePlatformClient(String protocol, String hostname, int port, String appname) {
+public class MeasureAnalysisPlatformClient extends MeasurePlatformClient {
+
+	public MeasureAnalysisPlatformClient(String protocol, String hostname, int port, String appname) {
 		super(protocol, hostname, port, appname);
 	}
 

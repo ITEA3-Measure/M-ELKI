@@ -1,7 +1,7 @@
 package fr.icam.elki.identifiers;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -10,8 +10,8 @@ public class ElkiIdentifierManager implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		List<Long> identifiers = new LinkedList<Long>();
-		identifiers.add(0L);
+		Map<Long, ElkiConfiguration> identifiers = new HashMap<Long, ElkiConfiguration>(128);
+		identifiers.put(0L, new ElkiConfiguration());
 		sce.getServletContext().setAttribute("identifiers", identifiers);
 	}
 

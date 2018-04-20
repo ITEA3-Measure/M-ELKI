@@ -10,21 +10,21 @@ import eu.measure.platform.analysis.api.AlertData;
 import eu.measure.platform.analysis.api.AlertProperty;
 import eu.measure.platform.analysis.api.AlertReport;
 import eu.measure.platform.analysis.api.EventType;
-import eu.measure.platform.analysis.api.MeasurePlatformClient;
+import eu.measure.platform.analysis.api.MeasureAnalysisPlatformClient;
 
 public class MeasurePlatformTesting {
 
 	private static final String NAME = "elki-clustering-services-on-test";
 	private static final String DESC = "This is the web services packaged and deployed by ICAM that provide the clustering algorithms of the ELKI library.";
-	private static final String HOST = "http://emit.icam.fr/elki";
+	private static final String HOST = "http://emit.icam.fr/elki?id=0";
 	private static final Long TESTID = 13L;
 	private static final Long ALGOID = 11L;
 	
-	private MeasurePlatformClient client;
+	private MeasureAnalysisPlatformClient client;
 	
 	@Before
 	public void setup() throws Exception {
-		client = new MeasurePlatformClient("http", "194.2.241.244", 80, "/measure");
+		client = new MeasureAnalysisPlatformClient("http", "194.2.241.244", 80, "/measure");
 	}
 
 	@Test

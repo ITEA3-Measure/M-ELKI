@@ -1,13 +1,24 @@
 package fr.icam.elki.platform;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import eu.measure.platform.analysis.api.MeasurePlatformClient;
+import eu.measure.platform.analysis.api.AlertData;
+import eu.measure.platform.analysis.api.AlertProperty;
+import eu.measure.platform.analysis.api.AlertReport;
+import eu.measure.platform.analysis.api.EventType;
+import eu.measure.platform.analysis.api.MeasureAnalysisPlatformClient;
+import eu.measure.platform.analysis.api.PropertyType;
+import fr.icam.elki.identifiers.ElkiConfiguration;
 
-public class MeasurePlatformConnection extends HttpServlet {
+public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 
 	private static final long serialVersionUID = 201804191520001L;
 
@@ -15,27 +26,143 @@ public class MeasurePlatformConnection extends HttpServlet {
 	
 	private static final String DESC = "Clustering Algorithms dedicated to the MEASURE Platform and based on the ELKI Java Library";
 	
-	private static final String HOST = "http://emit.icam.fr/elki";
-
+	private static final String CONF = "http://emit.icam.fr/elki/settings.html?id=";
 	
-	private MeasurePlatformClient client;
+	private static final String VIEW = "http://emit.icam.fr/elki?id=";
 	
+	private URI getConf(Long id) {
+		return URI.create(CONF + id);
+	}
+	
+	private URI getView(Long id) {
+		return URI.create(VIEW + id);
+	}
+	
+	private ScheduledExecutorService executor;
+		
+	private MeasureAnalysisPlatformClient client;
+	
+	private Map<Long, ElkiConfiguration> identifiers;
+	
+	private void doInsert(Long id) {
+		ElkiConfiguration cfg = identifiers.get(0L);
+		identifiers.put(id, new ElkiConfiguration(cfg));
+	}
+	
+	private void doDelete(Long id) {
+		identifiers.remove(id);
+	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init() throws ServletException {
 		super.init();
+		identifiers = (Map<Long, ElkiConfiguration>) this.getServletContext().getAttribute("identifiers");
+		executor = Executors.newSingleThreadScheduledExecutor();
 		try {
-			System.out.println("configuring ...");
-			client = new MeasurePlatformClient("http", "194.2.241.244", 80, "/measure");
+			client = new MeasureAnalysisPlatformClient("http", "194.2.241.244", 80, "/measure");
 			System.out.println("connecting ...");
 			client.setUp();
 			System.out.println("connected ...");
 			System.out.println("registering ...");
-			client.doRegister(URI.create(HOST).toURL(), DESC, NAME);
+			client.doRegister(this.getConf(0L).toURL(), DESC, NAME);
 			System.out.println("registered ...");
-			System.out.println("configured ...");
+			executor.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
+	}
+	
+	@Override
+	public void destroy() {
+		executor.shutdown();
+	}
+
+	public void run() {
+		try { this.doProcess(); } 
+		catch (Exception e) { e.printStackTrace(); }
+	}
+	
+	private void doProcess() throws Exception {
+		AlertReport report = client.getAlertReport(NAME);
+		for (AlertData alert : report.getAlerts()) {
+			this.doAlert(alert);
+		}
+	}
+
+	private void doAlert(AlertData alert) throws Exception {
+		String alertType = alert.getAlertType();
+		Long projectId = Long.valueOf(alert.getProjectId());
+		if (alertType.equals(EventType.ANALYSIS_ENABLE.name())) {
+			Long analysisId = this.getAnalysisId(alert);
+			this.onAnalysisEnabled(projectId, analysisId);
+		} else if (alertType.equals(EventType.ANALYSIS_DESABLE.name())) {
+			Long analysisId = this.getAnalysisId(alert);
+			this.onAnalysisDisabled(projectId, analysisId);
+		} else if (alertType.equals(EventType.MEASURE_ADDED.name())) {
+			Long measureId = this.getMeasureId(alert);
+			this.onMeasureAdded(projectId, measureId);
+		} else if (alertType.equals(EventType.MEASURE_REMOVED.name())) {
+			Long measureId = this.getMeasureId(alert);
+			this.onMeasureRemoved(projectId, measureId);
+		} else if (alertType.equals(EventType.MEASURE_SCHEDULED.name())) {
+			Long measureId = this.getMeasureId(alert);
+			this.onMeasureScheduled(projectId, measureId);
+		} else if (alertType.equals(EventType.MEASURE_UNSCHEDULED.name())) {
+			Long measureId = this.getMeasureId(alert);
+			this.onMeasureUnscheduled(projectId, measureId);
+		}
+	}
+
+	private void onAnalysisEnabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
+		System.out.println("enabling analysis ..." + analysisId);
+		this.doInsert(analysisId);
+		System.out.println("configuring analysis ..." + analysisId);
+		client.doConfigure(analysisId, this.getView(analysisId).toURL(), this.getConf(analysisId).toURL());
+		System.out.println("configured analysis ..." + analysisId);
+	}
+
+	private void onAnalysisDisabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
+		System.out.println("disabling analysis ..." + analysisId);
+		this.doDelete(analysisId);
+	}
+
+	private void onMeasureAdded(Long projectId, Long measureId) throws Exception, MalformedURLException {
+		System.out.println("adding measure ..." + measureId);
+	}
+
+	private void onMeasureRemoved(Long projectId, Long measureId) throws Exception, MalformedURLException {
+		System.out.println("removing analysis ..." + measureId);
+	}
+	
+	private void onMeasureScheduled(Long projectId, Long measureId) throws Exception, MalformedURLException {
+		System.out.println("scheduling measure ..." + measureId);
+	}
+	
+	private void onMeasureUnscheduled(Long projectId, Long measureId) throws Exception, MalformedURLException {
+		System.out.println("unscheduling measure ..." + measureId);
+	}
+
+	private Long getAnalysisId(AlertData alert) {
+		for (AlertProperty property : alert.getProperties()) {
+			String name = property.getProperty();
+			String value = property.getValue();
+			if (name.equals(PropertyType.ANALYSISID.name())) {
+				return Long.valueOf(value);
+			}
+		}
+		return null;
+	}
+
+	private Long getMeasureId(AlertData alert) {
+		for (AlertProperty property : alert.getProperties()) {
+			String name = property.getProperty();
+			String value = property.getValue();
+			if (name.equals(PropertyType.MEASUREID.name())) {
+				return Long.valueOf(value);
+			}
+		}
+		return null;
 	}
 	
 }
