@@ -26,7 +26,7 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	
 	private static final String DESC = "Clustering Algorithms dedicated to the MEASURE Platform and based on the ELKI Java Library";
 	
-	private static final String CONF = "http://emit.icam.fr/elki/settings.html?id=";
+	private static final String CONF = "http://emit.icam.fr/elki/settings/?id=";
 	
 	private static final String VIEW = "http://emit.icam.fr/elki?id=";
 	
@@ -61,12 +61,8 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 		executor = Executors.newSingleThreadScheduledExecutor();
 		try {
 			client = new MeasureAnalysisPlatformClient("http", "194.2.241.244", 80, "/measure");
-			System.out.println("connecting ...");
 			client.setUp();
-			System.out.println("connected ...");
-			System.out.println("registering ...");
 			client.doRegister(this.getConf(0L).toURL(), DESC, NAME);
-			System.out.println("registered ...");
 			executor.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -115,32 +111,24 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	}
 
 	private void onAnalysisEnabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
-		System.out.println("enabling analysis ..." + analysisId);
 		this.doInsert(analysisId);
-		System.out.println("configuring analysis ..." + analysisId);
 		client.doConfigure(analysisId, this.getView(analysisId).toURL(), this.getConf(analysisId).toURL());
-		System.out.println("configured analysis ..." + analysisId);
 	}
 
 	private void onAnalysisDisabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
-		System.out.println("disabling analysis ..." + analysisId);
 		this.doDelete(analysisId);
 	}
 
 	private void onMeasureAdded(Long projectId, Long measureId) throws Exception, MalformedURLException {
-		System.out.println("adding measure ..." + measureId);
 	}
 
 	private void onMeasureRemoved(Long projectId, Long measureId) throws Exception, MalformedURLException {
-		System.out.println("removing analysis ..." + measureId);
 	}
 	
 	private void onMeasureScheduled(Long projectId, Long measureId) throws Exception, MalformedURLException {
-		System.out.println("scheduling measure ..." + measureId);
 	}
 	
 	private void onMeasureUnscheduled(Long projectId, Long measureId) throws Exception, MalformedURLException {
-		System.out.println("unscheduling measure ..." + measureId);
 	}
 
 	private Long getAnalysisId(AlertData alert) {

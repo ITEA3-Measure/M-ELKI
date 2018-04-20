@@ -24,7 +24,7 @@
   </filter>
   <filter-mapping>
     <filter-name>elki-identifier-filter</filter-name>
-    <url-pattern>/settings.html*</url-pattern>
+    <url-pattern>/settings/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>elki-identifier-filter</filter-name>
