@@ -15,6 +15,7 @@ import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.DendrogramModel;
 import de.lmu.ifi.dbs.elki.database.Database;
 import fr.icam.elki.distances.Distance;
+import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class SLinkElkiClustering extends ElkiDistanceClustering<DendrogramModel> {
 
@@ -74,6 +75,10 @@ public class SLinkElkiClustering extends ElkiDistanceClustering<DendrogramModel>
 		SLINK<NumberVector> slink = new SLINK<NumberVector>(this.getInstanceOf(this.getDistance(id)));
 		SimplifiedHierarchyExtraction e = new SimplifiedHierarchyExtraction(slink, this.getSize(id));
 	    return e.run(database);
+	}
+	@Override
+	protected ElkiAlgorithm getAlgorithm() {
+		return ElkiAlgorithm.SLINK;
 	}
 
 }

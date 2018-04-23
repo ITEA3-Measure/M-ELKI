@@ -14,6 +14,7 @@ import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.Model;
 import de.lmu.ifi.dbs.elki.database.Database;
 import fr.icam.elki.distances.Distance;
+import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class DBScanElkiClustering extends ElkiDistanceClustering<Model> {
 
@@ -92,6 +93,11 @@ public class DBScanElkiClustering extends ElkiDistanceClustering<Model> {
 	protected Clustering<Model> doProcess(Long id, Database database) throws ServletException {
 		DBSCAN<NumberVector> dbscan = new DBSCAN<NumberVector>(this.getInstanceOf(this.getDistance(id)), this.getEpsilon(id), this.getSize(id));
 		return dbscan.run(database);
+	}
+
+	@Override
+	protected ElkiAlgorithm getAlgorithm() {
+		return ElkiAlgorithm.DBSCAN;
 	}
 
 }

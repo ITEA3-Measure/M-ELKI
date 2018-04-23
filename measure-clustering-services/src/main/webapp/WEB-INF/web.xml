@@ -149,5 +149,43 @@
     <servlet-name>slink</servlet-name>
     <url-pattern>/slink/*</url-pattern>
   </servlet-mapping>
+  
+  <!-- selection -->
+  
+  <servlet>
+    <servlet-name>dbscan-select</servlet-name>
+    <servlet-class>fr.icam.elki.identifiers.DBScanElkiSelection</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dbscan-select</servlet-name>
+    <url-pattern>/dbscan/select</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>kmeans-select</servlet-name>
+    <servlet-class>fr.icam.elki.identifiers.KMeansElkiSelection</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>kmeans-select</servlet-name>
+    <url-pattern>/kmeans/select</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>em-select</servlet-name>
+    <servlet-class>fr.icam.elki.identifiers.EMElkiSelection</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>em-select</servlet-name>
+    <url-pattern>/em/select</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>slink-select</servlet-name>
+    <servlet-class>fr.icam.elki.identifiers.SLinkElkiSelection</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>slink-select</servlet-name>
+    <url-pattern>/slink/select</url-pattern>
+  </servlet-mapping>
 
 </web-app>

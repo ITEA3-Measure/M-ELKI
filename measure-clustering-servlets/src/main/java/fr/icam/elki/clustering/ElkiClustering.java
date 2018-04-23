@@ -33,6 +33,7 @@ import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.MultipleObjectsBundleDatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.bundle.MultipleObjectsBundle;
 import fr.icam.elki.identifiers.ElkiConfiguration;
+import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 
@@ -75,14 +76,21 @@ public abstract class ElkiClustering<M extends Model> extends HttpServlet {
 	public final void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		try {
 			Long id = this.getResource(request);
-			Database database = this.getDatabase(request.getInputStream());
-			Clustering<M> clusters = this.doProcess(id, database);
-			this.doPrint(database, clusters, response.getOutputStream());
+			ElkiConfiguration configuration = this.getConfiguration(id);
+			if (configuration.isSelected(this.getAlgorithm())) {
+				Database database = this.getDatabase(request.getInputStream());
+				Clustering<M> clusters = this.doProcess(id, database);
+				this.doPrint(database, clusters, response.getOutputStream());				
+			} else {
+				throw new ServletException("operation not allowed as " + this.getAlgorithm().name().toLowerCase() + " isn't selected");
+			}
 		} catch (Exception e) {
 			response.sendError(520, e.getMessage());
 		}
 	}
 
+	protected abstract ElkiAlgorithm getAlgorithm();
+	
 	protected Long getResource(HttpServletRequest request) throws ServletException {
 		return (Long) request.getAttribute("id");
 	}

@@ -3,7 +3,9 @@ package fr.icam.elki.identifiers;
 import fr.icam.elki.distances.Distance;
 
 public class ElkiConfiguration {
-
+	
+	private ElkiAlgorithm algorithm;
+	
 	private DBScanElkiConfiguration dbscan;
 	
 	private KMeansElkiConfiguration kmeans;
@@ -44,12 +46,21 @@ public class ElkiConfiguration {
 		this.slink = new SLinkElkiConfiguration(size, distance);
 	}
 	
+	public boolean isSelected(ElkiAlgorithm algorithm) {
+		return this.algorithm == algorithm;
+	}
+	
+	public void doSelect(ElkiAlgorithm algorithm) {
+		this.algorithm = algorithm;
+	}
+	
 	public ElkiConfiguration() {
 		super();
 		this.dbscan = new DBScanElkiConfiguration();
 		this.kmeans = new KMeansElkiConfiguration();
 		this.em = new EMElkiConfiguration();
 		this.slink = new SLinkElkiConfiguration();
+		this.doSelect(ElkiAlgorithm.DBSCAN);
 	}
 	
 	public ElkiConfiguration(ElkiConfiguration configuration) {
@@ -58,6 +69,7 @@ public class ElkiConfiguration {
 		this.kmeans = new KMeansElkiConfiguration(configuration.getKmeans());
 		this.em = new EMElkiConfiguration(configuration.getEm());
 		this.slink = new SLinkElkiConfiguration(configuration.getSlink());
+		this.doSelect(ElkiAlgorithm.DBSCAN);
 	}
 	
 }

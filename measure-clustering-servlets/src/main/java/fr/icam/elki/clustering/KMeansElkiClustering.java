@@ -16,6 +16,7 @@ import de.lmu.ifi.dbs.elki.data.model.KMeansModel;
 import de.lmu.ifi.dbs.elki.database.Database;
 import de.lmu.ifi.dbs.elki.math.random.RandomFactory;
 import fr.icam.elki.distances.Distance;
+import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class KMeansElkiClustering extends ElkiDistanceClustering<KMeansModel> {
 
@@ -95,6 +96,10 @@ public class KMeansElkiClustering extends ElkiDistanceClustering<KMeansModel> {
 	    RandomlyGeneratedInitialMeans init = new RandomlyGeneratedInitialMeans(RandomFactory.DEFAULT);
 	    KMeansLloyd<NumberVector> km = new KMeansLloyd<NumberVector>(this.getInstanceOf(this.getDistance(id)), this.getLength(id), this.getLimit(id), init);
 	    return km.run(database);
+	}
+	@Override
+	protected ElkiAlgorithm getAlgorithm() {
+		return ElkiAlgorithm.KMEANS;
 	}
 	
 }

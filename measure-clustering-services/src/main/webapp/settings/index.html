@@ -15,150 +15,202 @@
     <div>
       <div class="container-fluid">
         <h2 class="display-4">M·ELKI <!-- img src="https://elki-project.github.io/img/elk200.png" alt="ELKI" height="60" width="60" / --></h2>
-        <p class="lead">Clustering Algorithms dedicated to the MEASURE Platform and based on the ELKI Java Library</p>
+        <p class="lead">Clustering Algorithms dedicated to the <a href="https://github.com/ITEA3-Measure">MEASURE</a> Platform and based on the <a href="https://elki-project.github.io/">ELKI</a> Java Library</p>
       </div>
     </div>
     <section id="content" class="container-fluid">
       <div class="row">
-      <div class="col">
-        <div class="list-group">
-          <div class="list-group-item">
-            <h5 class="list-group-item-heading">DBScan</h5>
-            <ul class="list-group-item-text">
-              <li>distance: {dbscan.data.distance.name}</li>
-              <li>epsilon: {dbscan.data.epsilon}</li>
-              <li>size: {dbscan.data.size}</li>
-            </ul>
-            <p class="list-group-item-text text-right">
-              <button class="btn btn-outline-primary" rv-on-click="dbscan.select">Select</button>
-            </p>
+        <div class="col">
+          <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="nav-tab-dbscan" data-toggle="tab" role="tab" aria-controls="tab-dbscan" aria-selected="true" href="#dbscan">
+                DBScan
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="nav-tab-kmeans" data-toggle="tab" role="tab" aria-controls="kmeans" aria-selected="false" href="#kmeans">
+                KMeans
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="nav-tab-em" data-toggle="tab" role="tab" aria-controls="em" aria-selected="false" href="#em">
+                EM
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="nav-tab-slink" data-toggle="tab" role="tab" aria-controls="slink" aria-selected="false" href="#slink">
+                SLink
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content" id="nav-tabContent">
+            <br/>
+            <div class="tab-pane fade show active" id="dbscan" role="tabpanel" aria-labelledby="dbscan">
+              <fieldset><legend>DBScan</legend></fieldset>
+              <p class="text-justify">
+                DBScan is a density-based clustering algorithm: 
+                it gathers into clusters points that are closely packed together.
+              </p>
+              <p>Parameters:</p>
+              <ul>
+                <li>distance: the distance function (here: {dbscan.data.distance.name})</li>
+                <li>epsilon: the maximum distance (here: {dbscan.data.epsilon})</li>
+                <li>size: the minimum size of clusters (here: {dbscan.data.size})</li>
+              </ul>
+              <p class="text-right">
+                <button class="btn btn-success" rv-show="dbscan.selected">Selected</button>
+                <button class="btn btn-outline-success" rv-hide="dbscan.selected" rv-on-click="dbscan.select">Select</button>
+                <button class="btn btn-outline-primary" rv-on-click="dbscan.edit">Edit</button>
+              </p>
+            </div>
+            <div class="tab-pane fade" id="kmeans" role="tabpanel" aria-labelledby="kmeans">
+              <fieldset><legend>KMeans</legend></fieldset>
+              <p class="text-justify">
+                <i>k</i>-means clustering aims to partition n points into <i>k</i> clusters in which each point belongs to the cluster 
+                with the nearest mean, serving as a prototype of the cluster.
+              </p>
+              <p>Parameters:</p>
+              <ul>
+                <li>distance: the distance function(here: {kmeans.data.distance.name})</li>
+                <li>length: (here: {kmeans.data.length})</li>
+                <li>limit: (here: {kmeans.data.limit})</li>
+              </ul>
+              <p class="text-right">
+                <button class="btn btn-success" rv-show="kmeans.selected">Selected</button>
+                <button class="btn btn-outline-success" rv-hide="kmeans.selected" rv-on-click="kmeans.select">Select</button>
+                <button class="btn btn-outline-primary" rv-on-click="kmeans.edit">Edit</button>
+              </p>
+            </div>
+            <div class="tab-pane fade" id="em" role="tabpanel" aria-labelledby="em">
+              <fieldset><legend>EM</legend></fieldset>
+              <p class="text-justify">
+                The expectation–maximization algorithm is an iterative method to find maximum likelihood estimates of points.
+                The iteration alternates between performing an expectation step and a maximization step 
+              </p>
+              <p>Parameters:</p>
+              <ul>
+                <li>length: (here: {em.data.length})</li>
+                <li>delta: (here: {em.data.delta})</li>
+                <li>limit: (here: {em.data.limit})</li>
+              </ul>
+              <p class="text-right">
+                <button class="btn btn-success" rv-show="em.selected">Selected</button>
+                <button class="btn btn-outline-success" rv-hide="em.selected" rv-on-click="em.select">Select</button>
+                <button class="btn btn-outline-primary" rv-on-click="em.edit">Edit</button>
+              </p>
+            </div>
+            <div class="tab-pane fade" id="slink" role="tabpanel" aria-labelledby="slink">
+              <fieldset><legend>SLink</legend></fieldset>
+              <p class="text-justify">
+                SLink is a connectivity-based clustering, also known as hierarchical clustering.
+                A cluster can be defined as the maximum distance needed to connect the different points of the cluster.
+              </p>
+              <p>Parameters:</p>
+              <ul>
+                <li>distance: the distance function (here: {slink.data.distance.name})</li>
+                <li>size: (here: {slink.data.size})</li>
+              </ul>
+              <p class="text-right">
+                <button class="btn btn-success" rv-show="slink.selected">Selected</button>
+                <button class="btn btn-outline-success" rv-hide="slink.selected" rv-on-click="slink.select">Select</button>
+                <button class="btn btn-outline-primary" rv-on-click="slink.edit">Edit</button>
+              </p>
+            </div>
           </div>
-          <div class="list-group-item">
-            <h5 class="list-group-item-heading">KMeans</h5>
-            <ul class="list-group-item-text">
-              <li>distance: {kmeans.data.distance.name}</li>
-              <li>length: {kmeans.data.length}</li>
-              <li>limit: {kmeans.data.limit}</li>
-            </ul>
-            <p class="list-group-item-text text-right">
-              <button class="btn btn-outline-primary" rv-on-click="kmeans.select">Select</button>
-            </p>
-          </div>
-          <div class="list-group-item">
-            <h5 class="list-group-item-heading">EM</h5>
-            <ul class="list-group-item-text">
-              <li>length: {em.data.length}</li>
-              <li>delta: {em.data.delta}</li>
-              <li>limit: {em.data.limit}</li>
-            </ul>
-            <p class="list-group-item-text text-right">
-              <button class="btn btn-outline-primary" rv-on-click="em.select">Select</button>
-            </p>
-          </div>
-          <div class="list-group-item">
-            <h5 class="list-group-item-heading">SLink</h5>
-            <ul class="list-group-item-text">
-              <li>distance: {slink.data.distance.name}</li>
-              <li>size: {slink.data.size}</li>
-            </ul>
-            <p class="list-group-item-text text-right">
-              <button class="btn btn-outline-primary" rv-on-click="slink.select">Select</button>
-            </p>
-          </div>
+          <hr/>
         </div>
-      </div>
-      <div class="col">
-        <form class="form" role="form" name="dbscanForm" rv-show="dbscan.selected">
-          <fieldset>
-            <legend>Configuring DBScan</legend>
-            <div class="form-group">
-              <label for="dbscan.epsilon">Epsilon</label>
-              <input type="number" step="0.1" id="dbscan.epsilon" class="form-control" rv-value="dbscan.copy.epsilon" placeholder="Epsilon" required />
-            </div>
-            <div class="form-group">
-              <label for="dbscan.size">Size</label>
-              <input type="number" step="1" id="dbscan.size" class="form-control" rv-value="dbscan.copy.size" placeholder="Size" required />
-            </div>
-            <div class="form-group">
-              <label for="dbscan.distance">Distance Function</label>
-              <select id="dbscan.distance" class="form-control" rv-on-change="dbscan.distance" placeholder="Distance Function" required>
-                <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
-              </select>
-            </div>
-            <div class="form-group text-right">
-               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-               <button type="button" class="btn btn-outline-dark" rv-on-click="dbscan.select">Reset</button>
-               <button type="button" class="btn btn-primary" rv-on-click="dbscan.put">Submit</button>
-             </div>
-          </fieldset>
-        </form>
-        <form class="form" role="form" name="kmeansForm" rv-show="kmeans.selected">
-          <fieldset>
-            <legend>Configuring KMeans</legend>
-            <div class="form-group">
-              <label for="kmeans.data.length">Length</label>
-              <input type="number" step="1" id="kmeans.data.length" class="form-control" rv-value="kmeans.copy.length" placeholder="Length" required />
-            </div>
-            <div class="form-group">
-              <label for="kmeans.data.limit">Limit</label>
-              <input type="number" step="1" id="kmeans.data.limit" class="form-control" rv-value="kmeans.copy.limit" placeholder="Limit" required />
-            </div>
-            <div class="form-group">
-              <label for="kmeans.data.distance">Distance Function</label>
-              <select id="kmeans.data.distance" class="form-control" rv-on-change="kmeans.distance" placeholder="Distance Function" required>
-                <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
-              </select>
-            </div>
-            <div class="form-group text-right">
-               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-               <button type="button" class="btn outline-dark" rv-on-click="kmeans.select">Reset</button>
-               <button type="button" class="btn btn-primary" rv-on-click="kmeans.put">Submit</button>
-             </div>
-          </fieldset>
-        </form>
-        <form class="form" role="form" name="emForm" rv-show="em.selected">
-          <fieldset>
-            <legend>Configuring EM</legend>
-            <div class="form-group">
-              <label for="em.data.delta">Delta</label>
-              <input type="number" step="1.0" id="em.data.delta" class="form-control" rv-value="em.copy.delta" placeholder="Delta" required />
-            </div>
-            <div class="form-group">
-              <label for="em.data.length">Length</label>
-              <input type="number" step="1" id="em.data.length" class="form-control" rv-value="em.copy.length" placeholder="Length" required />
-            </div>
-            <div class="form-group">
-              <label for="em.data.limit">Limit</label>
-              <input type="number" step="1" id="em.data.limit" class="form-control" rv-value="em.copy.limit" placeholder="Limit" required />
-            </div>
-            <div class="form-group text-right">
-               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-               <button type="button" class="btn btn-outline-dark" rv-on-click="em.select">Reset</button>
-               <button type="button" class="btn btn-primary" rv-on-click="em.put">Submit</button>
-             </div>
-          </fieldset>
-        </form>
-        <form class="form" role="form" name="slinkForm" rv-show="slink.selected">
-          <fieldset>
-            <legend>Configuring SLink</legend>
-            <div class="form-group">
-              <label for="slink.data.size">Size</label>
-              <input type="number" step="1" id="slink.data.size" class="form-control" rv-value="slink.copy.size" placeholder="Size" required />
-            </div>
-            <div class="form-group">
-              <label for="slink.data.distance">Distance Function</label>
-              <select id="slink.data.distance" class="form-control" rv-on-change="slink.distance" placeholder="Distance Function" required>
-               <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
-              </select>
-            </div>
-            <div class="form-group text-right">
-               <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
-               <button type="button" class="btn btn-outline-dark" rv-on-click="slink.select">Reset</button>
-               <button type="button" class="btn btn-primary" rv-on-click="slink.put">Submit</button>
-             </div>
-          </fieldset>
-        </form>
-      </div>
+        <div class="col">
+          <form class="form" role="form" name="dbscanForm" rv-show="dbscan.edited">
+            <fieldset>
+              <legend>Configuring DBScan</legend>
+              <div class="form-group">
+                <label for="dbscan.epsilon">Epsilon</label>
+                <input type="number" step="0.1" id="dbscan.epsilon" class="form-control" rv-value="dbscan.copy.epsilon" placeholder="Epsilon" required />
+              </div>
+              <div class="form-group">
+                <label for="dbscan.size">Size</label>
+                <input type="number" step="1" id="dbscan.size" class="form-control" rv-value="dbscan.copy.size" placeholder="Size" required />
+              </div>
+              <div class="form-group">
+                <label for="dbscan.distance">Distance Function</label>
+                <select id="dbscan.distance" class="form-control" rv-on-change="dbscan.distance" placeholder="Distance Function" required>
+                  <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
+                </select>
+              </div>
+              <div class="form-group text-right">
+                 <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+                 <button type="button" class="btn btn-outline-dark" rv-on-click="dbscan.edit">Reset</button>
+                 <button type="button" class="btn btn-primary" rv-on-click="dbscan.put">Submit</button>
+               </div>
+            </fieldset>
+          </form>
+          <form class="form" role="form" name="kmeansForm" rv-show="kmeans.edited">
+            <fieldset>
+              <legend>Configuring KMeans</legend>
+              <div class="form-group">
+                <label for="kmeans.data.length">Length</label>
+                <input type="number" step="1" id="kmeans.data.length" class="form-control" rv-value="kmeans.copy.length" placeholder="Length" required />
+              </div>
+              <div class="form-group">
+                <label for="kmeans.data.limit">Limit</label>
+                <input type="number" step="1" id="kmeans.data.limit" class="form-control" rv-value="kmeans.copy.limit" placeholder="Limit" required />
+              </div>
+              <div class="form-group">
+                <label for="kmeans.data.distance">Distance Function</label>
+                <select id="kmeans.data.distance" class="form-control" rv-on-change="kmeans.distance" placeholder="Distance Function" required>
+                  <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
+                </select>
+              </div>
+              <div class="form-group text-right">
+                 <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+                 <button type="button" class="btn outline-dark" rv-on-click="kmeans.edit">Reset</button>
+                 <button type="button" class="btn btn-primary" rv-on-click="kmeans.put">Submit</button>
+               </div>
+            </fieldset>
+          </form>
+          <form class="form" role="form" name="emForm" rv-show="em.edited">
+            <fieldset>
+              <legend>Configuring EM</legend>
+              <div class="form-group">
+                <label for="em.data.delta">Delta</label>
+                <input type="number" step="1.0" id="em.data.delta" class="form-control" rv-value="em.copy.delta" placeholder="Delta" required />
+              </div>
+              <div class="form-group">
+                <label for="em.data.length">Length</label>
+                <input type="number" step="1" id="em.data.length" class="form-control" rv-value="em.copy.length" placeholder="Length" required />
+              </div>
+              <div class="form-group">
+                <label for="em.data.limit">Limit</label>
+                <input type="number" step="1" id="em.data.limit" class="form-control" rv-value="em.copy.limit" placeholder="Limit" required />
+              </div>
+              <div class="form-group text-right">
+                 <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+                 <button type="button" class="btn btn-outline-dark" rv-on-click="em.edit">Reset</button>
+                 <button type="button" class="btn btn-primary" rv-on-click="em.put">Submit</button>
+               </div>
+            </fieldset>
+          </form>
+          <form class="form" role="form" name="slinkForm" rv-show="slink.edited">
+            <fieldset>
+              <legend>Configuring SLink</legend>
+              <div class="form-group">
+                <label for="slink.data.size">Size</label>
+                <input type="number" step="1" id="slink.data.size" class="form-control" rv-value="slink.copy.size" placeholder="Size" required />
+              </div>
+              <div class="form-group">
+                <label for="slink.data.distance">Distance Function</label>
+                <select id="slink.data.distance" class="form-control" rv-on-change="slink.distance" placeholder="Distance Function" required>
+                 <option rv-each-distance="distances" rv-value="distance.id" rv-text="distance.name"></option>
+                </select>
+              </div>
+              <div class="form-group text-right">
+                 <button type="button" class="btn btn-outline-danger" rv-on-click="clear">Cancel</button>
+                 <button type="button" class="btn btn-outline-dark" rv-on-click="slink.edit">Reset</button>
+                 <button type="button" class="btn btn-primary" rv-on-click="slink.put">Submit</button>
+               </div>
+            </fieldset>
+          </form>
+        </div>
       </div>
     </section>
   </body>
@@ -179,6 +231,7 @@
   var elki = {};
   elki.get = {};
   elki.put = {};
+  elki.head = {};
   elki.post = {};
   
   elki.get.distances = function(onSuccess, onError) {
@@ -328,6 +381,134 @@
     req.open('PUT','/elki/slink?id=' + id + parameters, true);
     req.send(null);
   };
+
+  elki.head.dbscan = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/dbscan/select?id=' + id, true);
+    req.send(null);    
+  };
+
+  elki.head.kmeans = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/kmeans/select?id=' + id, true);
+    req.send(null);    
+  };
+
+  elki.head.em = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/em/select?id=' + id, true);
+    req.send(null);    
+  };
+
+  elki.head.slink = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/slink/select?id=' + id, true);
+    req.send(null);    
+  };
+
+  elki.post.dbscan = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/dbscan/select?id=' + id, true);
+    req.send(null);    
+  };
+
+  elki.post.kmeans = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/kmeans/select?id=' + id, true);
+    req.send(null);    
+  };
+
+  elki.post.em = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/em/select?id=' + id, true);
+    req.send(null);    
+  };
+
+  elki.post.slink = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/slink/select?id=' + id, true);
+    req.send(null);    
+  };
   </script>
   <script type="text/javascript">
   
@@ -366,6 +547,22 @@
 	});
   };
     
+  content.dbscan.isSelected = function() {
+    elki.head.dbscan(function onSuccess(response){
+      content.dbscan.selected = response;
+	},function onError(response){
+	  content.dbscan.selected = false;
+	});
+  };
+    
+  content.dbscan.select = function() {
+    elki.post.dbscan(function onSuccess(response){
+      content.isSelected();
+	},function onError(response){
+	  content.isSelected();
+	});
+  };
+    
   content.kmeans.get = function() {
     elki.get.kmeans(function onSuccess(response){
       content.kmeans.data = response;
@@ -381,6 +578,22 @@
 	},function onError(response){
       content.clear();
       content.kmeans.get();
+	});
+  };
+    
+  content.kmeans.isSelected = function() {
+    elki.head.kmeans(function onSuccess(response){
+      content.kmeans.selected = response;
+	},function onError(response){
+	  content.kmeans.selected = false;
+	});
+  };
+    
+  content.kmeans.select = function() {
+    elki.post.kmeans(function onSuccess(response){
+      content.isSelected();
+	},function onError(response){
+	  content.isSelected();
 	});
   };
   
@@ -399,6 +612,22 @@
 	},function onError(response){
       content.clear();
       content.em.get();
+	});
+  };
+    
+  content.em.isSelected = function() {
+    elki.head.em(function onSuccess(response){
+      content.em.selected = response;
+	},function onError(response){
+	  content.em.selected = false;
+	});
+  };
+    
+  content.em.select = function() {
+    elki.post.em(function onSuccess(response){
+      content.isSelected();
+	},function onError(response){
+	  content.isSelected();
 	});
   };
   
@@ -420,17 +649,41 @@
 	});
   };
     
+  content.slink.isSelected = function() {
+    elki.head.slink(function onSuccess(response){
+      content.slink.selected = response;
+	},function onError(response){
+	  content.slink.selected = false;
+	});
+  };
+    
+  content.slink.select = function() {
+    elki.post.slink(function onSuccess(response){
+      content.isSelected();
+	},function onError(response){
+	  content.isSelected();
+	});
+  };
+  
+  content.isSelected = function() {
+    content.dbscan.isSelected();
+    content.kmeans.isSelected();
+    content.em.isSelected();
+    content.slink.isSelected();
+  } 
+    
   distances();
   content.dbscan.get();
   content.kmeans.get();
   content.em.get();
   content.slink.get();
+  content.isSelected();
   
   content.clear = function () {
-    content.dbscan.selected = false;
-    content.kmeans.selected = false;
-    content.em.selected = false;
-    content.slink.selected = false;	  
+    content.dbscan.edited = false;
+    content.kmeans.edited = false;
+    content.em.edited = false;
+    content.slink.edited = false;	  
   };
   
   content.dbscan.distance = function(event) {
@@ -457,28 +710,28 @@
 	});
   };
   
-  content.dbscan.select = function() {
+  content.dbscan.edit = function() {
     content.clear();
     content.dbscan.copy = jQuery.extend(true, {}, content.dbscan.data);
-    content.dbscan.selected = true;
+    content.dbscan.edited = true;
   };
   
-  content.kmeans.select = function() {
+  content.kmeans.edit = function() {
     content.clear();
     content.kmeans.copy = jQuery.extend(true, {}, content.kmeans.data);
-    content.kmeans.selected = true;
+    content.kmeans.edited = true;
   };
   
-  content.em.select = function() {
+  content.em.edit = function() {
     content.clear();
     content.em.copy = jQuery.extend(true, {}, content.em.data);
-    content.em.selected = true;
+    content.em.edited = true;
   };
   
-  content.slink.select = function() {
+  content.slink.edit = function() {
     content.clear();
     content.slink.copy = jQuery.extend(true, {}, content.slink.data);
-    content.slink.selected = true;
+    content.slink.edited = true;
   };
   </script>
 </html>

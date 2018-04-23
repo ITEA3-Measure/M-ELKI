@@ -16,6 +16,7 @@ import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.EMModel;
 import de.lmu.ifi.dbs.elki.database.Database;
 import de.lmu.ifi.dbs.elki.math.random.RandomFactory;
+import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class EMElkiClustering extends ElkiClustering<EMModel> {
 
@@ -104,6 +105,10 @@ public class EMElkiClustering extends ElkiClustering<EMModel> {
 		MultivariateGaussianModelFactory<NumberVector> fact = new MultivariateGaussianModelFactory<NumberVector>(init);
 		EM<NumberVector, EMModel> em = new EM<NumberVector, EMModel>(this.getLength(id), this.getDelta(id), fact, this.getLimit(id), false);
 	    return em.run(database);
+	}
+	@Override
+	protected ElkiAlgorithm getAlgorithm() {
+		return ElkiAlgorithm.EM;
 	}
 
 }
