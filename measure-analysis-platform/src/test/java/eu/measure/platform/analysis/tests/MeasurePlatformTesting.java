@@ -16,7 +16,7 @@ public class MeasurePlatformTesting {
 
 	private static final String NAME = "elki-clustering-services-on-test";
 	private static final String DESC = "This is the web services packaged and deployed by ICAM that provide the clustering algorithms of the ELKI library.";
-	private static final String HOST = "http://emit.icam.fr/elki?id=0";
+	private static final String HOST = "http://app.icam.fr/elki?id=0";
 	private static final Long TESTID = 13L;
 	private static final Long ALGOID = 11L;
 	

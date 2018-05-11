@@ -26,9 +26,9 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	
 	private static final String DESC = "Clustering Algorithms dedicated to the MEASURE Platform and based on the ELKI Java Library";
 	
-	private static final String CONF = "http://emit.icam.fr/elki/settings/?id=";
+	private static final String CONF = "http://app.icam.fr/elki/settings/?id=";
 	
-	private static final String VIEW = "http://emit.icam.fr/elki?id=";
+	private static final String VIEW = "http://app.icam.fr/elki?id=";
 	
 	private URI getConf(Long id) {
 		return URI.create(CONF + id);
