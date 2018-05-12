@@ -42,20 +42,13 @@
     <filter-name>elki-identifier-filter</filter-name>
     <url-pattern>/slink/*</url-pattern>
   </filter-mapping>
-    
-  <!-- mesaure platform -->
-  <servlet>
-    <servlet-name>platform</servlet-name>
-    <servlet-class>fr.icam.elki.platform.MeasurePlatformConnection</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
   
   <!-- distances -->
     
   <servlet>
     <servlet-name>distances</servlet-name>
     <servlet-class>fr.icam.elki.distances.ElkiDistanceProvider</servlet-class>
-    <load-on-startup>2</load-on-startup>
+    <load-on-startup>0</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>distances</servlet-name>
@@ -79,6 +72,7 @@
       <param-name>size</param-name>
       <param-value>10</param-value>
     </init-param>
+    <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>dbscan</servlet-name>
@@ -102,6 +96,7 @@
       <param-name>limit</param-name>
       <param-value>0</param-value>
     </init-param>
+    <load-on-startup>2</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>kmeans</servlet-name>
@@ -125,6 +120,7 @@
       <param-name>limit</param-name>
       <param-value>0</param-value>
     </init-param>
+    <load-on-startup>3</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>em</servlet-name>
@@ -144,11 +140,19 @@
       <param-name>size</param-name>
       <param-value>10</param-value>
     </init-param>
+    <load-on-startup>4</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>slink</servlet-name>
     <url-pattern>/slink/*</url-pattern>
   </servlet-mapping>
+    
+  <!-- mesaure platform -->
+  <servlet>
+    <servlet-name>platform</servlet-name>
+    <servlet-class>fr.icam.elki.platform.MeasurePlatformConnection</servlet-class>
+    <load-on-startup>5</load-on-startup>
+  </servlet>
   
   <!-- selection -->
   
