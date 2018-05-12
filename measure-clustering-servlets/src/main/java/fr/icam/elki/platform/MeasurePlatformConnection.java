@@ -63,6 +63,7 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 			client = new MeasureAnalysisPlatformClient("http", "194.2.241.244", 80, "/measure");
 			client.setUp();
 			client.doRegister(this.getConf(0L).toURL(), DESC, NAME);
+			System.out.println("registering analysis");
 			executor.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -111,11 +112,13 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	}
 
 	private void onAnalysisEnabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
+		System.out.println("configuring project analysis " + analysisId + " for project " + projectId);
 		this.doInsert(analysisId);
 		client.doConfigure(analysisId, this.getView(analysisId).toURL(), this.getConf(analysisId).toURL());
 	}
 
 	private void onAnalysisDisabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
+		System.out.println("deleting with project analysis " + analysisId + " for project " + projectId);
 		this.doDelete(analysisId);
 	}
 

@@ -50,7 +50,7 @@ public class KMeansElkiTesting {
 	
 	@Before
 	public void setup() throws Exception {
-		client = new ElkiClusteringClient("http", "emit.icam.fr", 80, "elki");
+		client = new ElkiClusteringClient("http", "app.icam.fr", 80, "elki", 0L);
 		int length = 10000;
 		int size = 2;
 		instances = new ArrayList<Instance>(length);

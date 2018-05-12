@@ -24,8 +24,11 @@ public class ElkiClusteringClient extends AbstractClient {
 	
 	private static final String SLINK = "slink";
 	
-	public ElkiClusteringClient(String protocol, String hostname, int port, String appname) {
+	private Long id;
+	
+	public ElkiClusteringClient(String protocol, String hostname, int port, String appname, Long id) {
 		super(protocol, hostname, port, appname);
+		this.id = id;
 	}
 
 	public void setUp() throws Exception {
@@ -35,27 +38,36 @@ public class ElkiClusteringClient extends AbstractClient {
 	}
 
 	public Map<String, Object> getDBScan() throws Exception {
-        HttpGet request = new HttpGet(this.getAppName() + DBSCAN);
+		URIBuilder builder = new URIBuilder(this.getAppName() + DBSCAN);
+		builder.addParameter("id", id.toString());
+        HttpGet request = new HttpGet(builder.build());
         return this.getMap(request);
 	}
 
 	public Map<String, Object> getKMeans() throws Exception {
-        HttpGet request = new HttpGet(this.getAppName() + KMEANS);
+		URIBuilder builder = new URIBuilder(this.getAppName() + KMEANS);
+		builder.addParameter("id", id.toString());
+        HttpGet request = new HttpGet(builder.build());
         return this.getMap(request);
 	}
 
 	public Map<String, Object> getEM() throws Exception {
-        HttpGet request = new HttpGet(this.getAppName() + EM);
+		URIBuilder builder = new URIBuilder(this.getAppName() + EM);
+		builder.addParameter("id", id.toString());
+        HttpGet request = new HttpGet(builder.build());
         return this.getMap(request);
 	}
 
 	public Map<String, Object> getSLink() throws Exception {
-        HttpGet request = new HttpGet(this.getAppName() + SLINK);
+		URIBuilder builder = new URIBuilder(this.getAppName() + SLINK);
+		builder.addParameter("id", id.toString());
+        HttpGet request = new HttpGet(builder.build());
         return this.getMap(request);
 	}
 
 	public Boolean setDBScan(Distance distance, Double epsilon, Integer size) throws Exception {
 		URIBuilder builder = new URIBuilder(this.getAppName() + DBSCAN);
+		builder.addParameter("id", id.toString());
 		builder.addParameter("distance", distance.toString().toLowerCase());
 		builder.addParameter("epsilon", epsilon.toString());
 		builder.addParameter("size", size.toString());
@@ -65,6 +77,7 @@ public class ElkiClusteringClient extends AbstractClient {
 
 	public Boolean setKMeans(Distance distance, Integer length, Integer limit) throws Exception {
 		URIBuilder builder = new URIBuilder(this.getAppName() + KMEANS);
+		builder.addParameter("id", id.toString());
 		builder.addParameter("distance", distance.toString().toLowerCase());
 		builder.addParameter("length", length.toString());
 		builder.addParameter("limit", limit.toString());
@@ -74,6 +87,7 @@ public class ElkiClusteringClient extends AbstractClient {
 
 	public Boolean setEM(Integer length, Double delta, Integer limit) throws Exception {
 		URIBuilder builder = new URIBuilder(this.getAppName() + EM);
+		builder.addParameter("id", id.toString());
 		builder.addParameter("delta", delta.toString());
 		builder.addParameter("length", length.toString());
 		builder.addParameter("limit", limit.toString());
@@ -83,6 +97,7 @@ public class ElkiClusteringClient extends AbstractClient {
 
 	public Boolean setSLink(Distance distance, Integer size) throws Exception {
 		URIBuilder builder = new URIBuilder(this.getAppName() + SLINK);
+		builder.addParameter("id", id.toString());
 		builder.addParameter("distance", distance.toString().toLowerCase());
 		builder.addParameter("size", size.toString());
         HttpPut request = new HttpPut(builder.build());
@@ -106,11 +121,13 @@ public class ElkiClusteringClient extends AbstractClient {
 	}
 
 	private List<Cluster> doProcess(String algorithm, List<Instance> instances) throws Exception {
-		 HttpPost request = new HttpPost(this.getAppName() + algorithm);
-		 String string = this.getContent(instances);
-		 StringEntity entity = new StringEntity(string);
-		 request.setEntity(entity);
-         return this.getList(Cluster[].class, request);
+		URIBuilder builder = new URIBuilder(this.getAppName() + algorithm);
+		builder.addParameter("id", id.toString());
+		HttpPost request = new HttpPost(builder.build());
+		String string = this.getContent(instances);
+		StringEntity entity = new StringEntity(string);
+		request.setEntity(entity);
+		return this.getList(Cluster[].class, request);
 	}
 	
 	private String getContent(List<Instance> instances) {
