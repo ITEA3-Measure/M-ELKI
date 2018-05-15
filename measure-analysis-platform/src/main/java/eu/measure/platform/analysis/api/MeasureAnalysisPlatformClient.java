@@ -27,8 +27,12 @@ public class MeasureAnalysisPlatformClient extends MeasurePlatformClient {
 		return this.getAppName() + "/api/analysis/register";
 	}
 	
-	private String getAlert(String name) throws NullPointerException {
-		return this.getAppName() + "/api/analysis/alert/list/?id=" + name;
+	private String getAlert(String id) throws NullPointerException {
+		return this.getAppName() + "/api/analysis/alert/list/?id=" + id;
+	}
+	
+	private String getProjectAnalysisPath(Long id) throws NullPointerException {
+		return this.getAppName() + "/api/projectanalysis/" + id;
 	}
 	
 	private String getConfigure() throws NullPointerException {
@@ -118,6 +122,11 @@ public class MeasureAnalysisPlatformClient extends MeasurePlatformClient {
 		StringEntity entity = new StringEntity(json, ContentType.APPLICATION_JSON);
 		request.setEntity(entity);
 		return this.getString(request);
+	}
+
+	public ProjectAnalysis getProjectAnalysis(Long id) throws Exception {
+        HttpGet request = new HttpGet(this.getProjectAnalysisPath(id));
+        return this.getObject(request, ProjectAnalysis.class);
 	}
 
 }

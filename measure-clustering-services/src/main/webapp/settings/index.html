@@ -23,7 +23,12 @@
         <div class="col">
           <ul class="nav nav-tabs" id="nav-tab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="nav-tab-dbscan" data-toggle="tab" role="tab" aria-controls="tab-dbscan" aria-selected="true" href="#dbscan">
+              <a class="nav-link active" id="nav-tab-measures" data-toggle="tab" role="tab" aria-controls="tab-measures" aria-selected="true" href="#measures">
+                Measures
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="nav-tab-dbscan" data-toggle="tab" role="tab" aria-controls="tab-dbscan" aria-selected="true" href="#dbscan">
                 DBScan
               </a>
             </li>
@@ -45,7 +50,29 @@
           </ul>
           <div class="tab-content" id="nav-tabContent">
             <br/>
-            <div class="tab-pane fade show active" id="dbscan" role="tabpanel" aria-labelledby="dbscan">
+            <div class="tab-pane fade show active" id="measures" role="tabpanel" aria-labelledby="measures">
+              <fieldset><legend>Measures</legend></fieldset>
+              <p class="text-justify">
+                Select the measures related to the project on which the clustering algorithms will apply to.
+              </p>
+              
+
+              <form class="form" role="form" name="measuresForm">
+                <fieldset>
+                  <div class="form-group">
+                    <label for="measures">Measures</label>
+                    <select id="measures" class="form-control" rv-on-change="cfg.pick" placeholder="Measures" multiple>
+                      <option rv-each-measure="measures" rv-value="measure.id" rv-text="measure.measureName"></option>
+                    </select>
+                  </div>
+                  <div class="form-group text-right">
+                 <button type="button" class="btn outline-dark" rv-on-click="cfg.clean">Reset</button>
+                 <button type="button" class="btn btn-primary" rv-on-click="cfg.select">Submit</button>
+                   </div>
+                </fieldset>
+              </form>
+            </div>
+            <div class="tab-pane fade show" id="dbscan" role="tabpanel" aria-labelledby="dbscan">
               <fieldset><legend>DBScan</legend></fieldset>
               <p class="text-justify">
                 DBScan is a density-based clustering algorithm: 
@@ -250,6 +277,22 @@
 	req.send(null);
   };
 	    
+  elki.get.measures = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/measures?id=' + id, true);
+    req.send(null);    
+  };
+	    
   elki.get.dbscan = function(onSuccess, onError) {
     const req = new XMLHttpRequest();
     req.onload = function(event) {
@@ -446,6 +489,23 @@
     req.send(null);    
   };
 
+  elki.post.measures = function(data, onSuccess, onError) {
+	const parameters = "";
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('POST','/elki/measures?id=' + id + parameters, true);
+    req.send(null);    
+  };
+
   elki.post.dbscan = function(onSuccess, onError) {
     const req = new XMLHttpRequest();
     req.onload = function(event) {
@@ -516,6 +576,8 @@
   rivets.bind($('#content'), content);
   
   content.distances = [];
+  content.measures = [];
+  content.cfg = {};
   content.dbscan = {};
   content.kmeans = {};
   content.em = {};
@@ -527,6 +589,30 @@
     },function onError(response) {
       content.distances = [];
     });
+  };
+  
+  var measures = function() {
+    elki.get.measures(function onSuccess(response){
+      content.measures = response;
+    },function onError(response) {
+      content.measures = [];
+    });
+  };
+    
+  content.cfg.clean = function() {
+    content.cfg.data = [];
+  };
+  
+  content.cfg.pick = function() {
+    
+  };
+    
+  content.cfg.select = function() {
+    elki.post.measures(function onSuccess(response){
+      content.cfg.data = response;
+	},function onError(response){
+	  content.cfg.data = [];
+	});
   };
     
   content.dbscan.get = function() {
@@ -673,6 +759,7 @@
   } 
     
   distances();
+  measures();
   content.dbscan.get();
   content.kmeans.get();
   content.em.get();

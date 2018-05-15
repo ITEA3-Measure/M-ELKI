@@ -44,13 +44,16 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	
 	private Map<Long, ElkiConfiguration> identifiers;
 	
-	private void doInsert(Long id) {
+	private void doInsert(Long projectId, Long analysisId) {
 		ElkiConfiguration cfg = identifiers.get(0L);
-		identifiers.put(id, new ElkiConfiguration(cfg));
+		ElkiConfiguration configuration = new ElkiConfiguration(cfg);
+		configuration.setProject(projectId);
+		identifiers.put(analysisId, configuration);
 	}
 	
-	private void doDelete(Long id) {
-		identifiers.remove(id);
+	private void doDelete(Long analysisId) {
+		ElkiConfiguration configuration = identifiers.remove(analysisId);
+		if (configuration != null) configuration.setProject(null);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -63,8 +66,9 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 			client = new MeasureAnalysisPlatformClient("http", "194.2.241.244", 80, "/measure");
 			client.setUp();
 			client.doRegister(this.getConf(0L).toURL(), DESC, NAME);
-			System.out.println("registering analysis");
+			System.out.println("[ELKI] registering analysis " + NAME);
 			executor.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS);
+			this.getServletContext().setAttribute("measure-platform-client", client);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -81,8 +85,10 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	}
 	
 	private void doProcess() throws Exception {
+		System.out.println("[ELKI] retrieving alert reports for " + NAME);
 		AlertReport report = client.getAlertReport(NAME);
 		for (AlertData alert : report.getAlerts()) {
+			System.out.println("[ELKI] processing alert data");
 			this.doAlert(alert);
 		}
 	}
@@ -112,13 +118,13 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	}
 
 	private void onAnalysisEnabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
-		System.out.println("configuring project analysis " + analysisId + " for project " + projectId);
-		this.doInsert(analysisId);
+		System.out.println("[ELKI] configuring project analysis " + analysisId + " for project " + projectId);
+		this.doInsert(projectId, analysisId);
 		client.doConfigure(analysisId, this.getView(analysisId).toURL(), this.getConf(analysisId).toURL());
 	}
 
 	private void onAnalysisDisabled(Long projectId, Long analysisId) throws Exception, MalformedURLException {
-		System.out.println("deleting with project analysis " + analysisId + " for project " + projectId);
+		System.out.println("[ELKI] deleting with project analysis " + analysisId + " for project " + projectId);
 		this.doDelete(analysisId);
 	}
 

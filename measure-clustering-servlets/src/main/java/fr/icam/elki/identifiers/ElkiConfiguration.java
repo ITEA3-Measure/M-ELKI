@@ -1,5 +1,9 @@
 package fr.icam.elki.identifiers;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import eu.measure.platform.api.MeasureInstance;
 import fr.icam.elki.distances.Distance;
 
 public class ElkiConfiguration {
@@ -14,6 +18,26 @@ public class ElkiConfiguration {
 	
 	private SLinkElkiConfiguration slink;
 
+	private Long project;
+
+	public Long getProject() {
+		return project;
+	}
+
+	public void setProject(Long project) {
+		this.project = project;
+	}
+	
+	private List<MeasureInstance> measures;
+
+	public List<MeasureInstance> getMeasures() {
+		return measures;
+	}
+
+	public void setMeasures(List<MeasureInstance> measures) {
+		this.measures = measures;
+	}
+	
 	public DBScanElkiConfiguration getDbscan() {
 		return dbscan;
 	}
@@ -61,6 +85,7 @@ public class ElkiConfiguration {
 		this.em = new EMElkiConfiguration();
 		this.slink = new SLinkElkiConfiguration();
 		this.doSelect(ElkiAlgorithm.DBSCAN);
+		this.setMeasures(new LinkedList<MeasureInstance>());
 	}
 	
 	public ElkiConfiguration(ElkiConfiguration configuration) {
@@ -70,6 +95,7 @@ public class ElkiConfiguration {
 		this.em = new EMElkiConfiguration(configuration.getEm());
 		this.slink = new SLinkElkiConfiguration(configuration.getSlink());
 		this.doSelect(ElkiAlgorithm.DBSCAN);
+		this.setMeasures(new LinkedList<MeasureInstance>());
 	}
 	
 }

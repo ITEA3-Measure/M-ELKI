@@ -24,6 +24,10 @@
   </filter>
   <filter-mapping>
     <filter-name>elki-identifier-filter</filter-name>
+    <url-pattern>/measures/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>elki-identifier-filter</filter-name>
     <url-pattern>/settings/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
@@ -155,6 +159,15 @@
   </servlet>
   
   <!-- selection -->
+  
+  <servlet>
+    <servlet-name>measure-select</servlet-name>
+    <servlet-class>fr.icam.elki.measures.MeasureSelection</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-select</servlet-name>
+    <url-pattern>/measures</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <servlet-name>dbscan-select</servlet-name>
