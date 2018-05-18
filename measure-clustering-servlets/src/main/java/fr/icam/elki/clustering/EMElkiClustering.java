@@ -8,15 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.lmu.ifi.dbs.elki.algorithm.clustering.em.EM;
-import de.lmu.ifi.dbs.elki.algorithm.clustering.em.MultivariateGaussianModelFactory;
-import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.initialization.RandomlyGeneratedInitialMeans;
-import de.lmu.ifi.dbs.elki.data.Clustering;
-import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.EMModel;
-import de.lmu.ifi.dbs.elki.database.Database;
-import de.lmu.ifi.dbs.elki.math.random.RandomFactory;
-import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class EMElkiClustering extends ElkiClustering<EMModel> {
 
@@ -97,18 +89,6 @@ public class EMElkiClustering extends ElkiClustering<EMModel> {
 		this.setDelta(id, request.getParameter("delta"));
 		this.setLimit(id, request.getParameter("limit"));
 		return true;
-	}
-	
-	@Override
-	protected Clustering<EMModel> doProcess(Long id, Database database) throws ServletException {
-		RandomlyGeneratedInitialMeans init = new RandomlyGeneratedInitialMeans(RandomFactory.DEFAULT);
-		MultivariateGaussianModelFactory<NumberVector> fact = new MultivariateGaussianModelFactory<NumberVector>(init);
-		EM<NumberVector, EMModel> em = new EM<NumberVector, EMModel>(this.getLength(id), this.getDelta(id), fact, this.getLimit(id), false);
-	    return em.run(database);
-	}
-	@Override
-	protected ElkiAlgorithm getAlgorithm() {
-		return ElkiAlgorithm.EM;
 	}
 
 }

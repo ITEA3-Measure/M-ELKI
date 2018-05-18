@@ -8,13 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
-import de.lmu.ifi.dbs.elki.data.Clustering;
-import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.Model;
-import de.lmu.ifi.dbs.elki.database.Database;
 import fr.icam.elki.distances.Distance;
-import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class DBScanElkiClustering extends ElkiDistanceClustering<Model> {
 
@@ -87,17 +82,6 @@ public class DBScanElkiClustering extends ElkiDistanceClustering<Model> {
 		this.setEpsilon(id, request.getParameter("epsilon"));
 		this.setSize(id, request.getParameter("size"));
 		return true;
-	}
-	
-	@Override
-	protected Clustering<Model> doProcess(Long id, Database database) throws ServletException {
-		DBSCAN<NumberVector> dbscan = new DBSCAN<NumberVector>(this.getInstanceOf(this.getDistance(id)), this.getEpsilon(id), this.getSize(id));
-		return dbscan.run(database);
-	}
-
-	@Override
-	protected ElkiAlgorithm getAlgorithm() {
-		return ElkiAlgorithm.DBSCAN;
 	}
 
 }

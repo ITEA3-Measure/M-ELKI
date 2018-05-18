@@ -8,14 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.lmu.ifi.dbs.elki.algorithm.clustering.hierarchical.SLINK;
-import de.lmu.ifi.dbs.elki.algorithm.clustering.hierarchical.extraction.SimplifiedHierarchyExtraction;
-import de.lmu.ifi.dbs.elki.data.Clustering;
-import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.DendrogramModel;
-import de.lmu.ifi.dbs.elki.database.Database;
 import fr.icam.elki.distances.Distance;
-import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class SLinkElkiClustering extends ElkiDistanceClustering<DendrogramModel> {
 
@@ -68,17 +62,6 @@ public class SLinkElkiClustering extends ElkiDistanceClustering<DendrogramModel>
 		super.setUp(id, request);
 		this.setSize(id, request.getParameter("size"));
 		return true;
-	}
-	
-	@Override
-	protected Clustering<DendrogramModel> doProcess(Long id, Database database) throws ServletException {
-		SLINK<NumberVector> slink = new SLINK<NumberVector>(this.getInstanceOf(this.getDistance(id)));
-		SimplifiedHierarchyExtraction e = new SimplifiedHierarchyExtraction(slink, this.getSize(id));
-	    return e.run(database);
-	}
-	@Override
-	protected ElkiAlgorithm getAlgorithm() {
-		return ElkiAlgorithm.SLINK;
 	}
 
 }

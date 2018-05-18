@@ -1,4 +1,4 @@
-package fr.icam.elki.identifiers;
+package fr.icam.elki.configurations;
 
 import java.io.IOException;
 import java.util.Map;
@@ -8,23 +8,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fr.icam.elki.identifiers.ElkiAlgorithm;
+import fr.icam.elki.configurations.ElkiAlgorithm;
 
 public abstract class ElkiSelection extends HttpServlet {
 
 	private static final long serialVersionUID = 201804231420001L;
 	
-	private Map<Long, ElkiConfiguration> identifiers;
+	private Map<Long, ElkiConfiguration> configurations;
 	
 	protected ElkiConfiguration getConfiguration(Long id) {
-		return identifiers.get(id);
+		return configurations.get(id);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		identifiers = (Map<Long, ElkiConfiguration>) this.getServletContext().getAttribute("identifiers");
+		configurations = (Map<Long, ElkiConfiguration>) this.getServletContext().getAttribute("configurations");
 	}
 
 	protected abstract ElkiAlgorithm getAlgorithm();

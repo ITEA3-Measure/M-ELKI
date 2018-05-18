@@ -1,7 +1,8 @@
-package fr.icam.elki.identifiers;
+package fr.icam.elki.configurations;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.measure.platform.api.MeasureInstance;
 import fr.icam.elki.distances.Distance;
@@ -28,14 +29,39 @@ public class ElkiConfiguration {
 		this.project = project;
 	}
 	
-	private List<MeasureInstance> measures;
+	private Map<MeasureInstance, Boolean> measures;
 
-	public List<MeasureInstance> getMeasures() {
-		return measures;
+	public Map<MeasureInstance, Boolean> getMeasures() {
+		return this.measures;
+	}
+
+	public void setMeasures() {
+		this.measures = new HashMap<MeasureInstance, Boolean>(16);
 	}
 
 	public void setMeasures(List<MeasureInstance> measures) {
-		this.measures = measures;
+		for (MeasureInstance measure : measures) {
+			if (!this.measures.containsKey(measure)) {
+				this.measures.put(measure, Boolean.FALSE);
+			}
+		}
+	}
+	
+	public Boolean isSelected(Long id) {
+		for (MeasureInstance measure : measures.keySet()) {
+			if (measure.getId().equals(id)) {
+				return measures.get(measure);
+			}
+		}
+		return null;
+	}
+	
+	public void doSelect(Long id, Boolean selected) {
+		for (MeasureInstance measure : measures.keySet()) {
+			if (measure.getId().equals(id)) {
+				measures.put(measure, selected);
+			}
+		}
 	}
 	
 	public DBScanElkiConfiguration getDbscan() {
@@ -85,7 +111,7 @@ public class ElkiConfiguration {
 		this.em = new EMElkiConfiguration();
 		this.slink = new SLinkElkiConfiguration();
 		this.doSelect(ElkiAlgorithm.DBSCAN);
-		this.setMeasures(new LinkedList<MeasureInstance>());
+		this.setMeasures();
 	}
 	
 	public ElkiConfiguration(ElkiConfiguration configuration) {
@@ -95,7 +121,7 @@ public class ElkiConfiguration {
 		this.em = new EMElkiConfiguration(configuration.getEm());
 		this.slink = new SLinkElkiConfiguration(configuration.getSlink());
 		this.doSelect(ElkiAlgorithm.DBSCAN);
-		this.setMeasures(new LinkedList<MeasureInstance>());
+		this.setMeasures();
 	}
 	
 }

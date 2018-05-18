@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RivetsJs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+    <style>
+      html {overflow-y:scroll;position:relative;height:100%;min-height:100%;}
+      body {padding-top: 0;padding-bottom: 9ex;}
+      footer {padding-top: 2ex;padding-bottom: 0;color: white;}
+      .footer {z-index: 2;}
+    </style>
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+  <body>
+    <section id="content" class="container-fluid">
+      <div class="row">
+      <div class="col">
+        <h3 rv-text="title"></h3>
+        <p rv-text="text"></p>
+        <h3 rv-show="paragraph.title" rv-text="paragraph.title"></h3>
+        <p rv-show="paragraph.text" rv-text="paragraph.text"></p>
+        <p><strong>Number:</strong> <span rv-show="fields.number" rv-text="fields.number"></span></p>
+        <p><strong>Text:</strong> <span rv-show="fields.text" rv-text="fields.text"></span></p>
+        <p><strong>date:</strong> <span rv-show="fields.date" rv-text="fields.date"></span></p>
+        <p><strong>Time:</strong> <span rv-show="fields.time" rv-text="fields.time"></span></p>
+        <p><strong>Checked:</strong> <span rv-text="fields.checked"></span></p>
+        <p><strong>Radio:</strong> <span rv-text="fields.radio"></span></p>
+        <p><strong>Single Select:</strong> <span rv-show="fields.select.single" rv-text="fields.select.single"></span></p>
+        <p><strong>Multiple Select:</strong></p>
+        <ul rv-show="fields.select.multiple">
+          <li rv-each-item="fields.select.multiple" rv-text="item"></li>
+        </ul>
+      </div>
+      <div class="col">
+        <form class="form" role="form" name="form">
+          <fieldset>
+            <legend>Fields</legend>
+            <div class="form-group">
+              <label for="fields.number">Number</label>
+              <input type="number" step="0.1" id="fields.number" class="form-control" rv-value="fields.number" placeholder="Number" required />
+            </div>
+            <div class="form-group">
+              <label for="fields.text">Text</label>
+              <input type="text" id="fields.text" class="form-control" rv-value="fields.text" placeholder="Text" required />
+            </div>
+            <div class="form-group row">
+              <div class="col">
+                <label for="fields.date">Date</label>
+                <input type="date" id="fields.date" class="form-control" rv-value="fields.date" placeholder="Date" required />
+              </div>
+              <div class="col">
+                <label for="fields.time">Time</label>
+                <input type="time" id="fields.time" class="form-control" rv-value="fields.time" placeholder="Time" required />
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Check</label>
+              <div class="form-check">
+                <input type="checkbox" id="fields.checked" class="form-check-input" rv-checked="fields.checked" required />
+                <label class="form-check-label" for="fields.checked">
+                  <span rv-show="fields.checked">checked</span>
+                  <span rv-hide="fields.checked">unchecked</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Radio</label>
+              <div class="form-check" rv-each-option="options">
+                <input class="form-check-input" type="radio" name="radios" rv-checked="fields.radio" rv-value="option.id" required />
+                <label class="form-check-label" rv-text="option.name"></label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="fields.select.single">Single Select</label>
+              <select id="fields.select.single" class="form-control" rv-value="fields.select.single" placeholder="Single Select" required>
+                <option rv-each-option="options" rv-value="option.id" rv-text="option.name"></option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="fields.select.multiple">Multiple Select</label>
+              <select id="fields.select.multiple" class="form-control" rv-value="fields.select.multiple" placeholder="Multiple Select" multiple required>
+                <option rv-each-option="options" rv-value="option.id" rv-text="option.name"></option>
+              </select>
+            </div>
+            <div class="form-group">
+               <button type="button" class="btn btn-outline-primary" rv-on-click="load.number">Number</button>
+               <button type="button" class="btn btn-outline-primary" rv-on-click="load.text">Text</button>
+               <button type="button" class="btn btn-outline-primary" rv-on-click="load.select.single">Select Single</button>
+               <button type="button" class="btn btn-outline-primary" rv-on-click="load.select.multiple">Select Multiple</button>
+             </div>
+            <div class="form-group text-right">
+               <button type="reset" class="btn btn-outline-danger" rv-on-click="clean">Reset</button>
+               <button type="submit" class="btn btn-outline-primary" rv-on-click="">Submit</button>
+             </div>
+          </fieldset>
+        </form>
+      </div>
+      </div>
+    </section>
+  </body>
+  <script type="text/javascript">
+  
+  var content = {};
+  rivets.bind($('#content'), content);
+  
+  var option1 = {id:"a", name:"première option"};
+  var option2 = {id:"b", name:"deuxième option"};
+  var option3 = {id:"c", name:"troisième option"};
+  var option4 = {id:"d", name:"quatrième option"};
+  
+  content.options = [ option1, option2, option3, option4 ];
+  
+  content.title = "un titre";
+  
+  content.text = "du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte";
+  
+  content.paragraph = {
+    title: "un autre titre",
+    text: "du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte du texte"
+  };
+  
+  content.clean = function() {
+    content.fields = {};
+    content.fields.select = {};
+    content.fields.checked = false;
+    content.fields.unchecked = true;
+  };
+  content.clean();
+  
+  content.load = {};
+  
+  content.load.number = function() {
+    content.fields.number = 5;
+  };
+  
+  content.load.text = function() {
+    content.fields.text = "du texte";
+  };
+  
+  content.load.select = {};
+  
+  content.load.select.single = function() {
+    content.fields.select.single = option3.id;
+  };
+  content.load.select.multiple = function() {
+    content.fields.select.multiple = [ option1.id, option4.id ];
+  };
+  
+  </script>
+</html>

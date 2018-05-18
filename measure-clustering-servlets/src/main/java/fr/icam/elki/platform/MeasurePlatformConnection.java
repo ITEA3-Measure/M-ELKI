@@ -16,7 +16,7 @@ import eu.measure.platform.analysis.api.AlertReport;
 import eu.measure.platform.analysis.api.EventType;
 import eu.measure.platform.analysis.api.MeasureAnalysisPlatformClient;
 import eu.measure.platform.analysis.api.PropertyType;
-import fr.icam.elki.identifiers.ElkiConfiguration;
+import fr.icam.elki.configurations.ElkiConfiguration;
 
 public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 
@@ -26,9 +26,9 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	
 	private static final String DESC = "Clustering Algorithms dedicated to the MEASURE Platform and based on the ELKI Java Library";
 	
-	private static final String CONF = "http://app.icam.fr/elki/settings/?id=";
+	private static final String CONF = "http://app.icam.fr/elki/settings.html?id=";
 	
-	private static final String VIEW = "http://app.icam.fr/elki?id=";
+	private static final String VIEW = "http://app.icam.fr/elki/results.html?id=";
 	
 	private URI getConf(Long id) {
 		return URI.create(CONF + id);
@@ -42,17 +42,17 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 		
 	private MeasureAnalysisPlatformClient client;
 	
-	private Map<Long, ElkiConfiguration> identifiers;
+	private Map<Long, ElkiConfiguration> configurations;
 	
 	private void doInsert(Long projectId, Long analysisId) {
-		ElkiConfiguration cfg = identifiers.get(0L);
+		ElkiConfiguration cfg = configurations.get(0L);
 		ElkiConfiguration configuration = new ElkiConfiguration(cfg);
 		configuration.setProject(projectId);
-		identifiers.put(analysisId, configuration);
+		configurations.put(analysisId, configuration);
 	}
 	
 	private void doDelete(Long analysisId) {
-		ElkiConfiguration configuration = identifiers.remove(analysisId);
+		ElkiConfiguration configuration = configurations.remove(analysisId);
 		if (configuration != null) configuration.setProject(null);
 	}
 	
@@ -60,14 +60,14 @@ public class MeasurePlatformConnection extends HttpServlet implements Runnable {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		identifiers = (Map<Long, ElkiConfiguration>) this.getServletContext().getAttribute("identifiers");
+		configurations = (Map<Long, ElkiConfiguration>) this.getServletContext().getAttribute("configurations");
 		executor = Executors.newSingleThreadScheduledExecutor();
 		try {
 			client = new MeasureAnalysisPlatformClient("http", "194.2.241.244", 80, "/measure");
 			client.setUp();
 			client.doRegister(this.getConf(0L).toURL(), DESC, NAME);
 			System.out.println("[ELKI] registering analysis " + NAME);
-			executor.scheduleAtFixedRate(this, 0, 60, TimeUnit.SECONDS);
+			executor.scheduleAtFixedRate(this, 0, 10, TimeUnit.SECONDS);
 			this.getServletContext().setAttribute("measure-platform-client", client);
 		} catch (Exception e) {
 			throw new ServletException(e);

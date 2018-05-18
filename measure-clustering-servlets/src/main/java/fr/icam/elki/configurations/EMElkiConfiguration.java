@@ -1,4 +1,4 @@
-package fr.icam.elki.identifiers;
+package fr.icam.elki.configurations;
 
 public class EMElkiConfiguration {
 

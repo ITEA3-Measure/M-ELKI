@@ -1,6 +1,6 @@
-package fr.icam.elki.identifiers;
+package fr.icam.elki.configurations;
 
-import fr.icam.elki.identifiers.ElkiAlgorithm;
+import fr.icam.elki.configurations.ElkiAlgorithm;
 
 public class SLinkElkiSelection extends ElkiSelection {
 

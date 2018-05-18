@@ -8,15 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.KMeansLloyd;
-import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.initialization.RandomlyGeneratedInitialMeans;
-import de.lmu.ifi.dbs.elki.data.Clustering;
-import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.data.model.KMeansModel;
-import de.lmu.ifi.dbs.elki.database.Database;
-import de.lmu.ifi.dbs.elki.math.random.RandomFactory;
 import fr.icam.elki.distances.Distance;
-import fr.icam.elki.identifiers.ElkiAlgorithm;
 
 public class KMeansElkiClustering extends ElkiDistanceClustering<KMeansModel> {
 
@@ -89,17 +82,6 @@ public class KMeansElkiClustering extends ElkiDistanceClustering<KMeansModel> {
 		this.setLength(id, request.getParameter("length"));
 		this.setLimit(id, request.getParameter("limit"));
 		return true;
-	}
-	
-	@Override
-	protected Clustering<KMeansModel> doProcess(Long id, Database database) throws ServletException {
-	    RandomlyGeneratedInitialMeans init = new RandomlyGeneratedInitialMeans(RandomFactory.DEFAULT);
-	    KMeansLloyd<NumberVector> km = new KMeansLloyd<NumberVector>(this.getInstanceOf(this.getDistance(id)), this.getLength(id), this.getLimit(id), init);
-	    return km.run(database);
-	}
-	@Override
-	protected ElkiAlgorithm getAlgorithm() {
-		return ElkiAlgorithm.KMEANS;
 	}
 	
 }

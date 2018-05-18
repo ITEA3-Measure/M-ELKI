@@ -15,36 +15,16 @@
   </listener>
   
   <listener>
-    <listener-class>fr.icam.elki.identifiers.ElkiIdentifierManager</listener-class>
+    <listener-class>fr.icam.elki.configurations.ElkiConfigurationManager</listener-class>
   </listener>
     
   <filter>
     <filter-name>elki-identifier-filter</filter-name>
-    <filter-class>fr.icam.elki.identifiers.ElkiIdentifierFilter</filter-class>
+    <filter-class>fr.icam.elki.configurations.ElkiIdentifierFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>elki-identifier-filter</filter-name>
-    <url-pattern>/measures/*</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>elki-identifier-filter</filter-name>
-    <url-pattern>/settings/*</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>elki-identifier-filter</filter-name>
-    <url-pattern>/dbscan/*</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>elki-identifier-filter</filter-name>
-    <url-pattern>/kmeans/*</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>elki-identifier-filter</filter-name>
-    <url-pattern>/em/*</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>elki-identifier-filter</filter-name>
-    <url-pattern>/slink/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
   
   <!-- distances -->
@@ -66,15 +46,15 @@
     <servlet-class>fr.icam.elki.clustering.DBScanElkiClustering</servlet-class>
     <init-param>
       <param-name>distance</param-name>
-      <param-value>squared-euclidean</param-value>
+      <param-value>euclidean</param-value>
     </init-param>
     <init-param>
       <param-name>epsilon</param-name>
-      <param-value>1.0</param-value>
+      <param-value>0.8</param-value>
     </init-param>
     <init-param>
       <param-name>size</param-name>
-      <param-value>10</param-value>
+      <param-value>15</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -90,15 +70,15 @@
     <servlet-class>fr.icam.elki.clustering.KMeansElkiClustering</servlet-class>
     <init-param>
       <param-name>distance</param-name>
-      <param-value>squared-euclidean</param-value>
+      <param-value>manhattan</param-value>
     </init-param>
     <init-param>
       <param-name>length</param-name>
-      <param-value>10</param-value>
+      <param-value>7</param-value>
     </init-param>
     <init-param>
       <param-name>limit</param-name>
-      <param-value>0</param-value>
+      <param-value>2</param-value>
     </init-param>
     <load-on-startup>2</load-on-startup>
   </servlet>
@@ -114,11 +94,11 @@
     <servlet-class>fr.icam.elki.clustering.EMElkiClustering</servlet-class>
     <init-param>
       <param-name>length</param-name>
-      <param-value>10</param-value>
+      <param-value>5</param-value>
     </init-param>
     <init-param>
       <param-name>delta</param-name>
-      <param-value>1.0</param-value>
+      <param-value>5.0</param-value>
     </init-param>
     <init-param>
       <param-name>limit</param-name>
@@ -138,7 +118,7 @@
     <servlet-class>fr.icam.elki.clustering.SLinkElkiClustering</servlet-class>
     <init-param>
       <param-name>distance</param-name>
-      <param-value>squared-euclidean</param-value>
+      <param-value>minimum</param-value>
     </init-param>
     <init-param>
       <param-name>size</param-name>
@@ -157,21 +137,40 @@
     <servlet-class>fr.icam.elki.platform.MeasurePlatformConnection</servlet-class>
     <load-on-startup>5</load-on-startup>
   </servlet>
+    
+  <!-- processing -->
+  <servlet>
+    <servlet-name>processing</servlet-name>
+    <servlet-class>fr.icam.elki.processing.ElkiProcessing</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>processing</servlet-name>
+    <url-pattern>/results/*</url-pattern>
+  </servlet-mapping>
   
   <!-- selection -->
   
   <servlet>
+    <servlet-name>measure-list</servlet-name>
+    <servlet-class>fr.icam.elki.measures.Lister</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>measure-list</servlet-name>
+    <url-pattern>/measures/list</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <servlet-name>measure-select</servlet-name>
-    <servlet-class>fr.icam.elki.measures.MeasureSelection</servlet-class>
+    <servlet-class>fr.icam.elki.measures.Select</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>measure-select</servlet-name>
-    <url-pattern>/measures</url-pattern>
+    <url-pattern>/measures/select</url-pattern>
   </servlet-mapping>
   
   <servlet>
     <servlet-name>dbscan-select</servlet-name>
-    <servlet-class>fr.icam.elki.identifiers.DBScanElkiSelection</servlet-class>
+    <servlet-class>fr.icam.elki.configurations.DBScanElkiSelection</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>dbscan-select</servlet-name>
@@ -180,7 +179,7 @@
   
   <servlet>
     <servlet-name>kmeans-select</servlet-name>
-    <servlet-class>fr.icam.elki.identifiers.KMeansElkiSelection</servlet-class>
+    <servlet-class>fr.icam.elki.configurations.KMeansElkiSelection</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>kmeans-select</servlet-name>
@@ -189,7 +188,7 @@
   
   <servlet>
     <servlet-name>em-select</servlet-name>
-    <servlet-class>fr.icam.elki.identifiers.EMElkiSelection</servlet-class>
+    <servlet-class>fr.icam.elki.configurations.EMElkiSelection</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>em-select</servlet-name>
@@ -198,7 +197,7 @@
   
   <servlet>
     <servlet-name>slink-select</servlet-name>
-    <servlet-class>fr.icam.elki.identifiers.SLinkElkiSelection</servlet-class>
+    <servlet-class>fr.icam.elki.configurations.SLinkElkiSelection</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>slink-select</servlet-name>

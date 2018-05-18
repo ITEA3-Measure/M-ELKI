@@ -1,12 +1,22 @@
-package fr.icam.elki.identifiers;
+package fr.icam.elki.configurations;
 
 import fr.icam.elki.distances.Distance;
 
-public class SLinkElkiConfiguration {
+public class DBScanElkiConfiguration {
 
+	private Double epsilon;
+	
 	private Integer size;
 	
 	private Distance distance;
+
+	public Double getEpsilon() {
+		return epsilon;
+	}
+
+	public void setEpsilon(Double epsilon) {
+		this.epsilon = epsilon;
+	}
 
 	public Integer getSize() {
 		return size;
@@ -24,18 +34,20 @@ public class SLinkElkiConfiguration {
 		this.distance = distance;
 	}
 
-	public SLinkElkiConfiguration() {
+	public DBScanElkiConfiguration() {
 		super();
 	}
 	
-	public SLinkElkiConfiguration(Integer size, Distance distance) {
+	public DBScanElkiConfiguration(Double epsilon, Integer size, Distance distance) {
 		super();
+		this.epsilon = epsilon;
 		this.size = size;
 		this.distance = distance;
 	}
-
-	public SLinkElkiConfiguration(SLinkElkiConfiguration configuration) {
+	
+	public DBScanElkiConfiguration(DBScanElkiConfiguration configuration) {
 		super();
+		this.epsilon = configuration.getEpsilon();
 		this.size = configuration.getSize();
 		this.distance = new Distance(configuration.getDistance());
 	}

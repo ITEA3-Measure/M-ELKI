@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>M·Elki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+  </head>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <body>
+    <section id="content" class="container-fluid">
+      <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+        <canvas id="chart"></canvas>
+      </div>
+    </section>
+  </body>
+  <script type="text/javascript">
+  var _colors = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+  };
+  var colors = [
+    _colors.red,
+    _colors.blue,
+    _colors.green,
+    _colors.purple,
+    _colors.orange,
+    _colors.yellow,
+    _colors.grey,
+  ]
+  </script>
+  <script type="text/javascript">
+  var data = function(points, cluster) {
+    var list = [];
+	for (var i in cluster.cluster) {
+	  var c = cluster.cluster[i];
+	  for (var j in points) {
+		var p = points[j];
+	    if (p.id == c) {
+          list.push({x:p.id,y:p.values[0]});
+	    }
+	  } 
+	}
+	return list;
+  };
+  
+  var datasets = function(points, clusters) {
+	var list = [];
+	for (var i in clusters) {
+	  var color = colors[i];
+	  var cluster = clusters[i];
+	  var item = {label:cluster.label, data:data(points, cluster), borderColor: color, backgroundColor: color};
+	  list.push(item);
+	}
+	return list;
+  }
+  
+  var update = function(points, clusters) {
+	  var context = document.getElementById('chart').getContext('2d');
+	  var color = Chart.helpers.color;
+	  var payload = {
+	    type: 'scatter',
+	    data: {
+	      datasets: datasets(points, clusters)
+	    },
+		options: {title: {display:true,text:'M·Elki Clustering Results'},scales:{xAxes:[{type:'linear',position:'bottom',ticks:{beginAtZero:true}}],yAxes:[]}}
+	  };
+	  new Chart(context, payload);	  
+  }
+  </script>
+  <script type="text/javascript">
+  var id = 0;
+  var identifier = function() {
+    var query = window.location.search;
+    var items = query.substring(1).split("&");
+    items.forEach(function(item) {
+    	var pair = item.split("=");
+    	if (pair[0] == "id") {
+    		id = pair[1];
+    	}
+    });
+  };
+  identifier();
+  
+  var elki = {};
+  elki.get = {};
+	    
+  elki.get.results = function(onSuccess, onError) {
+    const req = new XMLHttpRequest();
+    req.onload = function(event) {
+      if (this.status === 200) {
+        onSuccess(JSON.parse(this.responseText));
+      } else {
+    	onError(JSON.parse(this.responseText));
+      }
+    };
+    req.onerror = function(event) {
+      onError(JSON.parse(this.responseText));
+    }
+    req.open('GET','/elki/results/?id=' + id, true);
+    req.send(null);    
+  };
+  
+  </script>
+  <script type="text/javascript">
+  
+  var content = {};
+  rivets.bind($('#content'), content);
+  
+  content.results = function() {
+    elki.get.results(function onSuccess(response){
+      update(response.points, response.clusters);
+	},function onError(response){
+	});
+  };
+  
+  content.results();
+  
+  </script>
+</html>
